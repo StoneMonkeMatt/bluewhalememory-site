@@ -657,6 +657,7 @@ nav{
 <div class="doc-footer">
   <span class="doc-footer-text">Blue Whale Memory · Research Value Brief · v1 · May 2026</span>
   <span class="doc-footer-text">Stone Monkey Console · Leviathan Project</span>
+  <span class="doc-footer-text">© <span class="auto-year"></span> Blue Whale Memory · All rights reserved</span>
 </div>
 
 <script>
@@ -676,6 +677,8 @@ nav{
   const saved = localStorage.getItem('bwm-brief-theme');
   applyTheme(saved || (window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light'));
   toggle.addEventListener('click', () => applyTheme(html.classList.contains('light') ? 'dark' : 'light'));
+
+  document.querySelectorAll('.auto-year').forEach(el => el.textContent = new Date().getFullYear());
 
   const obs = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
