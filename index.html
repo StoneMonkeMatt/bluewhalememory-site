@@ -163,19 +163,34 @@ nav{
 
 
 /* ── HERO ── */
-.hero{
-  min-height:100vh;display:grid;grid-template-columns:1fr 1fr;
-  align-items:start;padding:6rem var(--pad) 0;
-  max-width:var(--max);margin:0 auto
+/* ── HERO BANNER ── */
+.hero-banner{
+  position:relative;width:100%;overflow:hidden;
+  margin-top:56px; /* nav height */
+  max-height:460px;
 }
-.hero-left{padding-right:clamp(2rem,5vw,5rem);animation:fadeUp .9s ease both}
-.hero-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:2rem;animation:fadeUp .9s .1s ease both}
+.hero-banner img{
+  width:100%;height:auto;display:block;
+  object-fit:cover;object-position:center 30%;
+}
+.hero-banner-fade{
+  position:absolute;bottom:0;left:0;right:0;height:60%;
+  background:linear-gradient(to bottom,transparent,var(--deep));
+  pointer-events:none;
+}
+
+/* ── HERO TEXT ── */
+.hero{
+  max-width:var(--max);margin:0 auto;
+  padding:3rem var(--pad) 5rem;
+}
+.hero-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:1.75rem;animation:fadeUp .9s .1s ease both}
 .eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 8px var(--teal);flex-shrink:0}
-.hero-headline{font-size:clamp(3rem,6vw,5rem);color:var(--text);margin-bottom:1.5rem;animation:fadeUp .9s .15s ease both}
+.hero-headline{font-size:clamp(2.8rem,6vw,4.8rem);color:var(--text);margin-bottom:1.25rem;animation:fadeUp .9s .15s ease both;max-width:680px}
 .hero-headline em{color:var(--accent)}
-.hero-sub{font-size:clamp(1rem,1.4vw,1.15rem);color:var(--muted);line-height:1.75;max-width:440px;margin-bottom:2.5rem;animation:fadeUp .9s .22s ease both}
-.hero-quote{border-left:2px solid rgba(79,142,247,.35);padding-left:1.25rem;margin-bottom:2.5rem;animation:fadeUp .9s .28s ease both}
-.hero-quote p{font-family:var(--fd);font-size:clamp(1.15rem,1.8vw,1.4rem);font-weight:300;font-style:italic;color:var(--text);line-height:1.5}
+.hero-sub{font-size:clamp(1rem,1.4vw,1.1rem);color:var(--muted);line-height:1.8;max-width:520px;margin-bottom:2rem;animation:fadeUp .9s .22s ease both}
+.hero-quote{border-left:2px solid rgba(79,142,247,.35);padding-left:1.25rem;margin-bottom:2rem;animation:fadeUp .9s .28s ease both;max-width:520px}
+.hero-quote p{font-family:var(--fd);font-size:clamp(1.1rem,1.6vw,1.3rem);font-weight:300;font-style:italic;color:var(--text);line-height:1.5}
 .hero-ctas{display:flex;gap:12px;flex-wrap:wrap;animation:fadeUp .9s .34s ease both}
 
 
@@ -203,23 +218,7 @@ nav{
 @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 
 
-/* ── HERO IMAGE ── */
-.hero-right{
-  position:relative;display:flex;align-items:flex-start;justify-content:center;
-  align-self:start;padding-top:0.5rem;animation:fadeUp .9s .2s ease both;
-}
-.hero-right::before{
-  content:'';position:absolute;width:480px;height:480px;border-radius:50%;
-  background:radial-gradient(circle,rgba(79,142,247,.07) 0%,transparent 70%);pointer-events:none
-}
-.hero-img-placeholder{
-  width:100%;aspect-ratio:1/1;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:1rem;font-size:6rem;opacity:.3;border-radius:4px;
-  border:.5px solid var(--border);
-  background:radial-gradient(ellipse 70% 70% at 50% 45%,rgba(79,142,247,.08) 0%,transparent 70%),var(--surface)
-}
-.hero-img-placeholder p{font-family:var(--fm);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+
 
 
 /* ── SECTIONS ── */
@@ -390,14 +389,13 @@ footer{
 /* ── RESPONSIVE ── */
 /* tablet */
 @media(max-width:1000px){
-  .hero{gap:2rem}
-  .hero-left{padding-right:clamp(1rem,3vw,2rem)}
+  .hero-banner{max-height:400px}
 }
 /* tablet portrait */
 @media(max-width:800px){
-  .hero{grid-template-columns:1fr;min-height:auto;padding-top:7rem;gap:2.5rem}
-  .hero-left{padding-right:0}
-  .hero-right{width:100%;max-width:520px;margin:0 auto;align-self:auto;padding-top:0}
+  .hero{padding-top:2rem;padding-bottom:3rem}
+  .hero-banner{max-height:320px}
+  .hero-headline{font-size:clamp(2.4rem,7vw,3.8rem)}
   .what-header{grid-template-columns:1fr;gap:1.5rem}
   .flow{flex-direction:column}
   .flow-step{border-right:none;border-bottom:.5px solid var(--border)}
@@ -407,14 +405,15 @@ footer{
   .trifecta-cards{grid-template-columns:1fr}
   .complexity-inner{grid-template-columns:1fr;gap:3rem}
   .img-badge{display:none}
-  .hero-ctas{flex-wrap:wrap}
 }
 /* mobile */
 @media(max-width:540px){
   .features{grid-template-columns:1fr}
   .complexity-grid{grid-template-columns:1fr}
   .cplx-who{grid-template-columns:1fr}
-  .hero-headline{font-size:clamp(2.2rem,10vw,3.2rem)}
+  .hero-headline{font-size:clamp(2rem,9vw,3rem)}
+  .hero-banner{max-height:240px}
+  .hero{padding:1.5rem var(--pad) 3rem}
   .register-form-wrap{padding:1.5rem}
   .closing-ctas{flex-direction:column;align-items:center}
   footer{flex-direction:column;align-items:flex-start}
@@ -450,31 +449,30 @@ footer{
 </nav>
 
 
-<!-- HERO -->
-<div style="max-width:var(--max);margin:0 auto;padding:0 var(--pad)">
-  <div class="hero">
-    <div class="hero-left">
-      <div class="hero-eyebrow">
-        <span class="eyebrow-dot"></span>
-        <span class="label">Free · No account · Up to 30 documents</span>
-      </div>
-      <h1 class="display hero-headline">
-        Turn complex<br>documents into<br><em>intelligent memory.</em>
-      </h1>
-      <p class="hero-sub">
-        Bring your research, notes, project files, or document chaos. Blue Whale Memory structures them into symbols, domains, bridges, and synthesis-ready insight — directly in your browser.
-      </p>
-      <blockquote class="hero-quote">
-        <p>Complexity is not the enemy.<br>It is the arena where timing, forgiveness, and choice become real.</p>
-      </blockquote>
-      <div class="hero-ctas">
-        <a href="https://app.bluewhalememory.com/" class="btn-primary" target="_blank">🐋 Try Intelligent Notes Free</a>
-        <a href="#register" class="btn-secondary">Register interest</a>
-      </div>
-    </div>
-    <div class="hero-right">
-      <img src="/images/blue-whale-protocol.png" alt="Every idea has direction. The author writes. The workshop remembers." style="width:100%;border-radius:4px;border:.5px solid var(--border);">
-    </div>
+<!-- HERO BANNER -->
+<div class="hero-banner">
+  <img src="/images/blue-whale-memory-hero.png" alt="Blue Whale Memory — depth and direction">
+  <div class="hero-banner-fade"></div>
+</div>
+
+<!-- HERO TEXT -->
+<div class="hero">
+  <div class="hero-eyebrow">
+    <span class="eyebrow-dot"></span>
+    <span class="label">Model-independent · Persistent · Interoperable</span>
+  </div>
+  <h1 class="display hero-headline">
+    A memory protocol<br>for <em>coherent intelligence.</em>
+  </h1>
+  <p class="hero-sub">
+    Blue Whale Memory turns scattered documents into structured, retrievable, synthesis-ready memory. Write. Orient. Remember.
+  </p>
+  <blockquote class="hero-quote">
+    <p>Complexity is not the enemy.<br>It is the arena where timing, forgiveness, and choice become real.</p>
+  </blockquote>
+  <div class="hero-ctas">
+    <a href="https://app.bluewhalememory.com/" class="btn-primary" target="_blank">🐋 Try Intelligent Notes Free</a>
+    <a href="#register" class="btn-secondary">Register interest</a>
   </div>
 </div>
 
@@ -646,6 +644,7 @@ footer{
     <a class="footer-link" href="#register">Register interest</a>
   </div>
   <div class="footer-stone">Stone Monkey Console · Leviathan Project</div>
+  <div style="width:100%;border-top:.5px solid var(--border);padding-top:1rem;margin-top:.5rem;font-family:var(--fm);font-size:10px;color:var(--faint);letter-spacing:.06em;">© <span class="auto-year"></span> Blue Whale Memory · All rights reserved</div>
   <div class="footer-wallet">
     <span class="wallet-label">🪙 Fuel the whale</span>
     <span class="wallet-tag">Bitcoin</span>
@@ -684,6 +683,9 @@ footer{
   },{threshold:.1,rootMargin:'0px 0px -40px 0px'});
   document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 
+
+  // ── COPYRIGHT YEAR ──
+  document.querySelectorAll('.auto-year').forEach(el => el.textContent = new Date().getFullYear());
 
   // ── SMOOTH SCROLL ──
   document.querySelectorAll('a[href^="#"]').forEach(a=>{
