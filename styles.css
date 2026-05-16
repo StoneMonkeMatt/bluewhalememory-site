@@ -1,0 +1,207 @@
+/*
+ * Blue Whale Memory — Shared Stylesheet
+ * Link from every page: <link rel="stylesheet" href="/styles.css">
+ * Page-specific styles go in each file's own <style> block.
+ */
+
+/* ── RESET ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ── TOKENS — dark default ── */
+:root{
+  --ink:        #0a0d13;
+  --deep:       #060810;
+  --surface:    #0e1420;
+  --surface2:   #141c2e;
+  --border:     rgba(100,140,220,0.12);
+  --border-mid: rgba(100,140,220,0.07);
+  --text:       #dce6f5;
+  --muted:      #6e87a8;
+  --faint:      #2e3d55;
+  --accent:     #4f8ef7;
+  --accent-dim: rgba(79,142,247,0.10);
+  --teal:       #3ecfa8;
+  --teal-dim:   rgba(62,207,168,0.08);
+  --amber:      #f59e0b;
+  --amber-dim:  rgba(245,158,11,0.09);
+  --fd:'Cormorant Garamond',Georgia,serif;
+  --fb:'Instrument Sans',sans-serif;
+  --fm:'DM Mono',monospace;
+  --pad:clamp(1.25rem,5vw,3rem);
+  --rad:20px;
+  --max:1120px;
+  --nav-top:rgba(6,8,16,0.97);
+  --nav-mid:rgba(6,8,16,0.70);
+}
+
+/* ── LIGHT MODE ── */
+html.light{
+  --ink:        #f5f4f0;
+  --deep:       #eceae4;
+  --surface:    #faf9f7;
+  --surface2:   #f0ede8;
+  --border:     rgba(60,80,140,0.12);
+  --border-mid: rgba(60,80,140,0.07);
+  --text:       #1a2236;
+  --muted:      #4a5a7a;
+  --faint:      #8a9ab8;
+  --accent:     #2d6ef0;
+  --accent-dim: rgba(45,110,240,0.10);
+  --teal:       #0d8f72;
+  --teal-dim:   rgba(13,143,114,0.08);
+  --amber:      #b45309;
+  --amber-dim:  rgba(180,83,9,0.08);
+  --nav-top:rgba(238,241,248,0.97);
+  --nav-mid:rgba(238,241,248,0.50);
+}
+
+/* ── BASE ── */
+html{
+  background:var(--deep);
+  color:var(--text);
+  font-family:var(--fb);
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  scroll-behavior:smooth;
+}
+
+body{
+  background:var(--deep);
+  transition:background .35s ease,color .35s ease;
+}
+
+/* ── NOISE GRAIN ── */
+html::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:1000;opacity:.35;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  background-size:200px;
+}
+html.light::after{opacity:.1}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--faint);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--muted)}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:1.25rem var(--pad);
+  display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(to bottom,var(--nav-top),var(--nav-mid));
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border-bottom:.5px solid var(--border-mid);
+  transition:background .35s ease;
+}
+.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-brand:hover{opacity:.8}
+.nav-whale{font-size:22px;line-height:1}
+.nav-name{font-family:var(--fm);font-size:13px;color:var(--text);letter-spacing:.02em;transition:color .35s}
+.nav-name span{display:block;font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:1px;transition:color .35s}
+.nav-actions{display:flex;align-items:center;gap:1rem;flex-wrap:nowrap}
+.nav-link{font-size:13px;color:var(--muted);text-decoration:none;transition:color .2s;white-space:nowrap}
+.nav-link:hover{color:var(--text)}
+.nav-doc{font-family:var(--fm);font-size:10px;color:var(--faint);letter-spacing:.1em;text-transform:uppercase}
+
+/* ── BACK LINK ── */
+.back-link{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--fm);font-size:11px;letter-spacing:.06em;
+  color:var(--muted);text-decoration:none;
+  padding:5px 12px;border:.5px solid var(--border);
+  border-radius:var(--rad);background:var(--surface);
+  transition:color .2s,border-color .2s,background .35s;
+}
+.back-link:hover{color:var(--teal);border-color:rgba(62,207,168,.3)}
+
+/* ── THEME TOGGLE ── */
+.theme-toggle{
+  display:flex;align-items:center;
+  background:var(--surface2);border:.5px solid var(--border);
+  border-radius:var(--rad);padding:3px;cursor:pointer;flex-shrink:0;
+  transition:background .35s,border-color .35s;
+}
+.theme-toggle-option{
+  display:flex;align-items:center;justify-content:center;
+  width:28px;height:24px;border-radius:16px;
+  font-size:13px;opacity:.4;line-height:1;transition:background .2s,opacity .2s;
+}
+.theme-toggle-option.active{background:var(--surface);opacity:1;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+
+/* ── PILL BUTTONS ── */
+.btn-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--fm);font-size:12px;letter-spacing:.05em;
+  padding:8px 18px;border-radius:var(--rad);
+  text-decoration:none;white-space:nowrap;cursor:pointer;
+  transition:all .25s ease;
+}
+.btn-teal{
+  background:linear-gradient(135deg,rgba(62,207,168,.12),rgba(79,142,247,.10));
+  color:var(--teal);border:1px solid rgba(62,207,168,.40);
+}
+.btn-teal:hover{
+  background:linear-gradient(135deg,rgba(62,207,168,.22),rgba(79,142,247,.16));
+  border-color:rgba(62,207,168,.7);color:#5ef5d0;transform:translateY(-1px);
+}
+.btn-accent{
+  background:var(--accent-dim);color:var(--accent);
+  border:1px solid rgba(79,142,247,.35);
+}
+.btn-accent:hover{
+  background:rgba(79,142,247,.18);border-color:rgba(79,142,247,.6);transform:translateY(-1px);
+}
+.btn-ghost{
+  background:transparent;color:var(--muted);
+  border:.5px solid var(--border);
+}
+.btn-ghost:hover{color:var(--text);border-color:rgba(100,140,220,.3)}
+
+/* ── SECTION DIVIDER ── */
+.section-divider{width:100%;height:.5px;background:var(--border-mid)}
+
+/* ── SCROLL REVEAL ── */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ── SMOOTH THEME TRANSITIONS ── */
+nav,section,footer,.tri-card,.feat,.flow-step,.complexity,
+.complexity-inner,.cplx-item,.register-form-wrap,.form-input,
+.form-select,.form-textarea,.layer,.uplift-card,.callout,
+.limit-cell,.compound-visual,.summary-table thead th,
+.summary-table tbody td,.closing,.doc-footer,.props li{
+  transition:background .35s ease,color .35s ease,border-color .35s ease;
+}
+
+/* ── FOOTER ── */
+.site-footer{
+  border-top:.5px solid var(--border);
+  padding:3rem var(--pad);
+  max-width:var(--max);margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;
+}
+.footer-brand{display:flex;align-items:center;gap:10px}
+.footer-whale{font-size:20px}
+.footer-name{font-family:var(--fm);font-size:12px;color:var(--muted);line-height:1.5;transition:color .35s}
+.footer-name strong{color:var(--text);font-weight:400;display:block;transition:color .35s}
+.footer-links{display:flex;gap:2rem;align-items:center}
+.footer-link{font-size:12px;color:var(--faint);text-decoration:none;transition:color .2s}
+.footer-link:hover{color:var(--muted)}
+.footer-stone{font-family:var(--fm);font-size:10px;color:var(--faint);letter-spacing:.08em;text-transform:uppercase}
+
+/* ── DOC FOOTER (brief pages) ── */
+.doc-footer{
+  margin-top:4rem;padding-top:1.5rem;border-top:.5px solid var(--border-mid);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;
+}
+.doc-footer-text{font-family:var(--fm);font-size:10px;color:var(--faint);letter-spacing:.06em;text-transform:uppercase}
+
+/* ── RESPONSIVE NAV ── */
+@media(max-width:640px){
+  .nav-link,.nav-doc{display:none}
+}
+@media(max-width:480px){
+  nav{padding:1rem var(--pad)}
+}
