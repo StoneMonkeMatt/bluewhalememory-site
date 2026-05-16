@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -60,14 +59,13 @@ html.light body{background:radial-gradient(ellipse 60% 40% at 70% 10%,rgba(43,11
 html.light nav{background:linear-gradient(to bottom,rgba(238,241,248,.97),transparent)}
 html.light .complexity{background:#f7f9fe}
 html.light .flow-arrow{background:var(--deep)}
-html.light .img-badge{background:rgba(255,255,255,.92)}
 html.light .hero-img-placeholder{background:radial-gradient(ellipse 70% 70% at 50% 45%,rgba(43,110,232,.06) 0%,transparent 70%),var(--surface)}
 
 
 /* ── THEME TRANSITION ── */
 html,body,nav,section,footer,.tri-card,.feat,.flow-step,
 .complexity,.complexity-inner,.cplx-item,.register-form-wrap,
-.form-input,.form-select,.form-textarea,.img-badge,.hero-img-placeholder{
+.form-input,.form-select,.form-textarea{
   transition:background .35s ease,color .35s ease,border-color .35s ease
 }
 
@@ -207,7 +205,6 @@ nav{
 .hero-right{
   position:relative;display:flex;align-items:center;justify-content:center;
   min-height:560px;animation:fadeUp .9s .2s ease both;
-  padding:0 clamp(1rem,4vw,3rem)
 }
 .hero-right::before{
   content:'';position:absolute;width:480px;height:480px;border-radius:50%;
@@ -221,16 +218,6 @@ nav{
   background:radial-gradient(ellipse 70% 70% at 50% 45%,rgba(79,142,247,.08) 0%,transparent 70%),var(--surface)
 }
 .hero-img-placeholder p{font-family:var(--fm);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
-.img-badge{
-  position:absolute;background:rgba(14,20,32,.9);border:.5px solid var(--border);
-  backdrop-filter:blur(8px);border-radius:3px;padding:8px 12px;
-  font-family:var(--fm);font-size:11px;color:var(--muted);pointer-events:none
-}
-.img-badge.b1{top:10%;left:5%}
-.img-badge.b2{bottom:12%;right:5%}
-.img-badge.b3{top:55%;left:5%}
-.badge-val{display:block;font-size:14px;color:var(--text);margin-bottom:2px}
-.badge-teal{color:var(--teal)}
 
 
 /* ── SECTIONS ── */
@@ -411,7 +398,6 @@ footer{
   .features{grid-template-columns:1fr}
   .trifecta-cards{grid-template-columns:1fr}
   .complexity-inner{grid-template-columns:1fr;gap:3rem}
-  .img-badge{display:none}
   footer{flex-direction:column;align-items:flex-start}
 }
 @media(max-width:600px){
@@ -439,7 +425,7 @@ footer{
     <a class="nav-link" href="#what">What it does</a>
     <a class="nav-link" href="#trifecta">The Trifecta</a>
     <a class="nav-link" href="#register">Register interest</a>
-    <a class="btn-pill btn-trifecta" href="https://claude.ai/public/artifacts/71f1a0b4-fbff-4741-b08f-71c7a736668c" target="_blank">🌀 Trifecta</a>
+    <a class="btn-pill btn-trifecta" href="/trifecta.html" target="_blank">🌀 Trifecta</a>
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark theme">
       <span class="theme-toggle-option" id="opt-dark">🌙</span>
       <span class="theme-toggle-option" id="opt-light">☀️</span>
@@ -473,9 +459,6 @@ footer{
     </div>
     <div class="hero-right">
       <img src="/images/blue-whale-protocol.png" alt="Every idea has direction. The author writes. The workshop remembers." style="width:100%;border-radius:4px;border:.5px solid var(--border);">
-      <div class="img-badge b1"><span class="badge-val badge-teal">current_truth</span><span>Event Horizon reached</span></div>
-      <div class="img-badge b2"><span class="badge-val">R(N) 0.91</span><span>Retrieval readiness</span></div>
-      <div class="img-badge b3"><span class="badge-val">12 bridges formed</span><span>Semantic connections</span></div>
     </div>
   </div>
 </div>
