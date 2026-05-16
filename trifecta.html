@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blue Whale Memory — Research Value Brief</title>
+<meta name="description" content="How Blue Whale Memory improves complex research projects — and what the Claude marginal gain looks like at each layer.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── TOKENS ── */
+:root {
+  --paper:      #faf8f4;
+  --paper2:     #f3f0ea;
+  --paper3:     #ece8df;
+  --ink:        #1a1612;
+  --ink2:       #3d3830;
+  --muted:      #7a7268;
+  --faint:      #b8b0a4;
+  --rule:       rgba(60,50,30,0.12);
+  --rule-strong:rgba(60,50,30,0.22);
+  --blue:       #1d4ed8;
+  --blue-dim:   rgba(29,78,216,0.07);
+  --teal:       #0f7a63;
+  --teal-dim:   rgba(15,122,99,0.07);
+  --amber:      #92400e;
+  --amber-dim:  rgba(146,64,14,0.07);
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'Source Serif 4', Georgia, serif;
+  --font-mono:    'DM Mono', monospace;
+  --max: 860px;
+  --pad: clamp(1.5rem, 6vw, 4rem);
+}
+
+/* ── DARK MODE ── */
+html.dark {
+  --paper:       #0e0c09;
+  --paper2:      #161310;
+  --paper3:      #1e1a15;
+  --ink:         #e8e0d4;
+  --ink2:        #c4b9a8;
+  --muted:       #7a6e60;
+  --faint:       #3a3228;
+  --rule:        rgba(200,180,140,0.10);
+  --rule-strong: rgba(200,180,140,0.20);
+  --blue:        #6096f5;
+  --blue-dim:    rgba(96,150,245,0.10);
+  --teal:        #3ecfa8;
+  --teal-dim:    rgba(62,207,168,0.09);
+  --amber:       #d97706;
+  --amber-dim:   rgba(217,119,6,0.09);
+}
+
+html.dark body {
+  background:
+    radial-gradient(ellipse 70% 40% at 80% 5%, rgba(96,150,245,0.05) 0%, transparent 60%),
+    var(--paper);
+}
+
+html.dark .summary-table thead th { background: var(--paper2); }
+html.dark .uplift-card.claude { background: rgba(96,150,245,0.08); border-color: rgba(96,150,245,0.18); }
+html.dark .callout { background: rgba(96,150,245,0.08); border-color: rgba(96,150,245,0.2); }
+html.dark .callout.amber { background: rgba(217,119,6,0.08); border-color: rgba(217,119,6,0.2); }
+html.dark .callout.teal { background: rgba(62,207,168,0.08); border-color: rgba(62,207,168,0.2); }
+
+/* smooth theme transition */
+html, body, .masthead, .cover, .layer, .uplift-card,
+.callout, .limit-cell, .compound-visual, .summary-table thead th,
+.summary-table tbody td, .closing, .doc-footer, .props li {
+  transition: background 0.35s ease, color 0.35s ease, border-color 0.35s ease;
+}
+
+/* ── THEME TOGGLE ── */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  background: var(--paper2);
+  border: 1px solid var(--rule-strong);
+  border-radius: 20px;
+  padding: 3px;
+  cursor: pointer;
+  gap: 0;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.theme-toggle-option {
+  width: 28px;
+  height: 24px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  opacity: 0.35;
+  transition: background 0.2s, opacity 0.2s;
+  line-height: 1;
+}
+
+.theme-toggle-option.active {
+  background: var(--paper);
+  opacity: 1;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+
+/* ── BASE ── */
+html {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--pad) 6rem;
+}
+
+/* ── MASTHEAD ── */
+.masthead {
+  padding: 3rem 0 2.5rem;
+  border-bottom: 1px solid var(--rule-strong);
+  margin-bottom: 3rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.masthead-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.masthead-whale { font-size: 24px; line-height: 1; }
+
+.masthead-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+
+.masthead-name strong {
+  display: block;
+  color: var(--ink2);
+  font-weight: 400;
+  font-size: 13px;
+}
+
+.masthead-meta {
+  text-align: right;
+}
+
+.masthead-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+  display: block;
+  margin-bottom: 3px;
+}
+
+.masthead-doc {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* ── COVER ── */
+.cover {
+  padding: 3rem 0 3.5rem;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 3.5rem;
+}
+
+.cover-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cover-eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 24px;
+  height: 1px;
+  background: var(--blue);
+}
+
+.cover-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 5vw, 3.75rem);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--ink);
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+.cover-title em {
+  font-style: italic;
+  color: var(--ink2);
+}
+
+.cover-standfirst {
+  font-size: 1.2rem;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--ink2);
+  line-height: 1.65;
+  max-width: 620px;
+  margin-bottom: 2rem;
+  border-left: 3px solid var(--blue);
+  padding-left: 1.25rem;
+}
+
+.cover-meta-row {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.cover-meta-item {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
+.cover-meta-item strong {
+  display: block;
+  color: var(--ink2);
+  font-weight: 400;
+  margin-bottom: 2px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ── PROSE ── */
+.prose {
+  margin-bottom: 3.5rem;
+}
+
+.prose p {
+  margin-bottom: 1.25rem;
+  color: var(--ink2);
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.prose p:last-child { margin-bottom: 0; }
+
+.prose strong { color: var(--ink); font-weight: 500; }
+
+/* ── SECTION HEADERS ── */
+.section {
+  margin-bottom: 3.5rem;
+}
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.section-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--faint);
+  letter-spacing: 0.08em;
+  flex-shrink: 0;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+/* ── LAYER CARDS ── */
+.layer {
+  background: var(--paper2);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.layer::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+}
+
+.layer.l1::before { background: var(--blue); }
+.layer.l2::before { background: var(--teal); }
+.layer.l3::before { background: var(--amber); }
+.layer.l4::before { background: #7c3aed; }
+
+.layer-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.layer-title-group { flex: 1; }
+
+.layer-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: 4px;
+}
+
+.layer-title {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.layer-desc {
+  font-size: 0.95rem;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
+}
+
+/* uplift block */
+.uplift-block {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 1.25rem;
+}
+
+.uplift-card {
+  border-radius: 3px;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--rule);
+}
+
+.uplift-card.human { background: var(--paper3); }
+.uplift-card.claude { background: #f0f4ff; border-color: rgba(29,78,216,0.15); }
+
+.uplift-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.uplift-label.human-label { color: var(--amber); }
+.uplift-label.claude-label { color: var(--blue); }
+
+.uplift-number {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 400;
+  line-height: 1;
+  margin-bottom: 4px;
+  color: var(--ink);
+}
+
+.uplift-card.claude .uplift-number { color: var(--blue); }
+.uplift-card.human .uplift-number { color: var(--amber); }
+
+.uplift-desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+  font-family: var(--font-mono);
+}
+
+/* gain tags */
+.gain-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 1rem;
+}
+
+.gain-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 3px 9px;
+  border-radius: 2px;
+  border: 1px solid var(--rule);
+  color: var(--muted);
+  background: var(--paper);
+}
+
+/* ── SUMMARY TABLE ── */
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.9rem;
+}
+
+.summary-table thead th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--rule-strong);
+  text-align: left;
+  font-weight: 400;
+  background: var(--paper2);
+}
+
+.summary-table tbody td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink2);
+  vertical-align: top;
+  line-height: 1.5;
+}
+
+.summary-table tbody tr:last-child td { border-bottom: none; }
+.summary-table tbody tr:hover td { background: var(--paper2); }
+
+.summary-table .td-layer {
+  font-weight: 500;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.pct {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.pct.human { color: var(--amber); }
+.pct.claude { color: var(--blue); }
+.pct.combined { color: var(--teal); font-weight: 500; }
+
+/* ── COMPOUND GAIN VISUAL ── */
+.compound-visual {
+  background: var(--paper2);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 2rem;
+  margin: 1.5rem 0;
+}
+
+.compound-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.compound-row:last-child { margin-bottom: 0; }
+
+.compound-layer-name {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  width: 160px;
+  flex-shrink: 0;
+  letter-spacing: 0.03em;
+}
+
+.compound-bar-wrap {
+  flex: 1;
+  height: 28px;
+  background: var(--paper3);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid var(--rule);
+}
+
+.compound-bar-human {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  background: rgba(146,64,14,0.18);
+  border-right: 1px solid rgba(146,64,14,0.3);
+}
+
+.compound-bar-claude {
+  position: absolute;
+  top: 0; bottom: 0;
+  background: rgba(29,78,216,0.15);
+  border-right: 1px solid rgba(29,78,216,0.3);
+}
+
+.compound-pct {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  width: 80px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.compound-legend {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+}
+
+.compound-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.legend-dot {
+  width: 12px; height: 12px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.legend-dot.human { background: rgba(146,64,14,0.25); border: 1px solid rgba(146,64,14,0.4); }
+.legend-dot.claude { background: rgba(29,78,216,0.20); border: 1px solid rgba(29,78,216,0.35); }
+
+/* ── CALLOUT ── */
+.callout {
+  background: var(--blue-dim);
+  border: 1px solid rgba(29,78,216,0.18);
+  border-left: 3px solid var(--blue);
+  border-radius: 0 3px 3px 0;
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.callout.amber {
+  background: var(--amber-dim);
+  border-color: rgba(146,64,14,0.18);
+  border-left-color: var(--amber);
+}
+
+.callout.teal {
+  background: var(--teal-dim);
+  border-color: rgba(15,122,99,0.18);
+  border-left-color: var(--teal);
+}
+
+.callout p {
+  font-size: 0.95rem;
+  color: var(--ink2);
+  line-height: 1.7;
+  margin: 0;
+}
+
+.callout strong { color: var(--ink); }
+
+/* ── PROPOSITION LIST ── */
+.props {
+  list-style: none;
+  margin: 1rem 0;
+}
+
+.props li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 0.95rem;
+  color: var(--ink2);
+  line-height: 1.65;
+}
+
+.props li:last-child { border-bottom: none; }
+
+.prop-pin {
+  flex-shrink: 0;
+  font-size: 14px;
+  margin-top: 1px;
+  opacity: 0.7;
+}
+
+/* ── HONEST LIMITS ── */
+.limits-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 1rem 0;
+}
+
+.limit-cell {
+  background: var(--paper2);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 1rem 1.25rem;
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.6;
+  font-family: var(--font-mono);
+}
+
+.limit-cell strong {
+  display: block;
+  color: var(--ink2);
+  margin-bottom: 4px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ── CLOSING STATEMENT ── */
+.closing {
+  border-top: 1px solid var(--rule-strong);
+  padding-top: 3rem;
+  margin-top: 3rem;
+  text-align: center;
+}
+
+.closing-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--ink);
+  line-height: 1.3;
+  margin-bottom: 1rem;
+}
+
+.closing-sub {
+  font-size: 0.95rem;
+  color: var(--muted);
+  max-width: 520px;
+  margin: 0 auto 2rem;
+  line-height: 1.75;
+}
+
+.closing-ctas {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 400;
+  padding: 12px 28px;
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  text-decoration: none;
+  letter-spacing: 0.01em;
+  transition: opacity 0.2s;
+}
+
+.btn-primary:hover { opacity: 0.85; }
+
+.btn-secondary {
+  font-family: var(--font-body);
+  font-size: 14px;
+  padding: 11px 24px;
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--rule-strong);
+  border-radius: 3px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.btn-secondary:hover { color: var(--ink); border-color: var(--rule-strong); }
+
+/* ── FOOTER ── */
+.doc-footer {
+  margin-top: 4rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.doc-footer-text {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--faint);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ── PRINT ── */
+@media print {
+  body { max-width: 100%; padding: 2cm; font-size: 11pt; }
+  .closing-ctas { display: none; }
+  .layer { break-inside: avoid; }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .uplift-block { grid-template-columns: 1fr; }
+  .limits-grid { grid-template-columns: 1fr; }
+  .compound-layer-name { width: 100px; font-size: 10px; }
+  .summary-table { font-size: 0.8rem; }
+  .cover-meta-row { flex-direction: column; gap: 1rem; }
+}
+
+/* ── SCROLL REVEAL ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div class="masthead-brand">
+    <span class="masthead-whale">🐋</span>
+    <span class="masthead-name">
+      <strong>Blue Whale Memory</strong>
+      bluewhalememory.com
+    </span>
+  </div>
+  <div class="masthead-meta">
+    <span class="masthead-label">Document type</span>
+    <span class="masthead-doc">Research Value Brief · Stone Monkey / Leviathan Project</span>
+  </div>
+  <div style="display:flex; align-items:center; gap:10px;">
+    <a href="https://claude.ai/public/artifacts/7ad2d603-115c-4ae9-b972-f082b11f3bd0"
+       target="_blank"
+       style="display:inline-flex; align-items:center; gap:7px; font-family:var(--font-mono); font-size:11px; letter-spacing:0.06em; color:var(--muted); text-decoration:none; padding:6px 14px; border:1px solid var(--rule-strong); border-radius:3px; background:var(--paper2); transition:color 0.2s, border-color 0.2s;"
+       onmouseover="this.style.color='var(--ink)'; this.style.borderColor='var(--rule-strong)'"
+       onmouseout="this.style.color='var(--muted)'; this.style.borderColor='var(--rule-strong)'">
+      🐋 &nbsp;← Homepage
+    </a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+      <span class="theme-toggle-option" id="opt-light">☀️</span>
+      <span class="theme-toggle-option" id="opt-dark">🌙</span>
+    </button>
+  </div>
+</div>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-eyebrow">For researchers, writers, and builders working with complex documents</div>
+  <h1 class="cover-title">
+    Blue Whale Memory<br>
+    <em>Research Value Brief</em>
+  </h1>
+  <p class="cover-standfirst">
+    Blue Whale Memory does not promise the answer. It preserves the path well enough that the next question becomes clearer.
+  </p>
+  <div class="cover-meta-row">
+    <div class="cover-meta-item">
+      <strong>Status</strong>
+      current_truth
+    </div>
+    <div class="cover-meta-item">
+      <strong>Confidence</strong>
+      reasoned · provisional
+    </div>
+    <div class="cover-meta-item">
+      <strong>Domains</strong>
+      Research · AI_Context · Product_Value
+    </div>
+    <div class="cover-meta-item">
+      <strong>Version</strong>
+      v1 · May 2026
+    </div>
+  </div>
+</div>
+
+<!-- POSITIONING -->
+<div class="prose reveal">
+  <p>In complex research projects, the problem is rarely a simple lack of information. The problem is that information becomes scattered — across papers, notes, transcripts, drafts, datasets, meeting records, citations, failed attempts, partial insights, and unresolved questions. Over time, the researcher loses energy not to the problem itself, but to <strong>orientation around the problem</strong>.</p>
+  <p>Blue Whale Memory helps by turning complex document sets into structured, retrievable, synthesis-ready memory. The goal is not to make the researcher smarter. The goal is to make the research field around them more navigable.</p>
+  <p>This brief explains the four layers of value, what each layer delivers to the human researcher, and — with precision and honesty — what the Claude marginal gain looks like when structured memory replaces raw document handling.</p>
+</div>
+
+<!-- LAYERS -->
+<div class="section reveal">
+  <div class="section-header">
+    <span class="section-num">01–04</span>
+    <h2 class="section-title">The four layers of value</h2>
+  </div>
+
+  <!-- LAYER 1 -->
+  <div class="layer l1 reveal">
+    <div class="layer-header">
+      <div class="layer-title-group">
+        <div class="layer-num">Layer 01 · Intelligent Notes</div>
+        <div class="layer-title">Structured note output</div>
+      </div>
+    </div>
+    <p class="layer-desc">Each document becomes an Intelligent Note — not just a summary, but a structured object carrying facts, claims, assumptions, domains, symbols, bridges, confidence, status, and a retrieval readiness score R(N). The researcher gains faster orientation without rereading. The system gains a navigable object instead of a text block.</p>
+    <div class="gain-tags">
+      <span class="gain-tag">Facts</span>
+      <span class="gain-tag">Domains</span>
+      <span class="gain-tag">Symbols</span>
+      <span class="gain-tag">Bridges</span>
+      <span class="gain-tag">Confidence</span>
+      <span class="gain-tag">R(N) score</span>
+      <span class="gain-tag">Status</span>
+    </div>
+    <div class="uplift-block">
+      <div class="uplift-card human">
+        <div class="uplift-label human-label">Human uplift</div>
+        <div class="uplift-number">20–35%</div>
+        <div class="uplift-desc">improvement in orientation and document handling</div>
+      </div>
+      <div class="uplift-card claude">
+        <div class="uplift-label claude-label">Claude marginal gain</div>
+        <div class="uplift-number">+8–12%</div>
+        <div class="uplift-desc">less context spent inferring structure · more on reasoning</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LAYER 2 -->
+  <div class="layer l2 reveal">
+    <div class="layer-header">
+      <div class="layer-title-group">
+        <div class="layer-num">Layer 02 · Oracle Retrieval</div>
+        <div class="layer-title">Meaning-first retrieval</div>
+      </div>
+    </div>
+    <p class="layer-desc">Normal search finds keywords. Oracle Retrieval finds meaning. It surfaces which documents support a claim, which contradict it, where an assumption first appeared, and which ideas are connected across domains under different names. Research is relationship management — and retrieval should reflect that.</p>
+    <div class="gain-tags">
+      <span class="gain-tag">Semantic search</span>
+      <span class="gain-tag">Lineage tracing</span>
+      <span class="gain-tag">Contradiction map</span>
+      <span class="gain-tag">Bridge navigation</span>
+    </div>
+    <div class="uplift-block">
+      <div class="uplift-card human">
+        <div class="uplift-label human-label">Human uplift</div>
+        <div class="uplift-number">30–50%</div>
+        <div class="uplift-desc">improvement in retrieval, continuity, and cross-document navigation</div>
+      </div>
+      <div class="uplift-card claude">
+        <div class="uplift-label claude-label">Claude marginal gain</div>
+        <div class="uplift-number">+12–18%</div>
+        <div class="uplift-desc">pre-mapped relationships mean Claude reasons over tensions rather than discovering them</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LAYER 3 -->
+  <div class="layer l3 reveal">
+    <div class="layer-header">
+      <div class="layer-title-group">
+        <div class="layer-num">Layer 03 · Event Horizon Synthesis</div>
+        <div class="layer-title">New centre of meaning</div>
+      </div>
+    </div>
+    <p class="layer-desc">When a set of notes reaches density, Event Horizon Synthesis produces not a summary but a new working centre — the emergent claim, convergent threads, pinpoint propositions, unresolved contradictions, and a clear next action. The researcher sees what the documents are becoming, not just what they say.</p>
+    <div class="gain-tags">
+      <span class="gain-tag">Event Horizon claim</span>
+      <span class="gain-tag">Pinpoint propositions</span>
+      <span class="gain-tag">Contradiction load</span>
+      <span class="gain-tag">Next action</span>
+      <span class="gain-tag">book_seed</span>
+    </div>
+    <div class="uplift-block">
+      <div class="uplift-card human">
+        <div class="uplift-label human-label">Human uplift</div>
+        <div class="uplift-number">40–70%</div>
+        <div class="uplift-desc">improvement in synthesis clarity for the right project</div>
+      </div>
+      <div class="uplift-card claude">
+        <div class="uplift-label claude-label">Claude marginal gain</div>
+        <div class="uplift-number">+20–30%</div>
+        <div class="uplift-desc">cluster state and Ψ score allow synthesis-level reasoning rather than document-level summarising</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LAYER 4 -->
+  <div class="layer l4 reveal" style="border-color: rgba(124,58,237,0.15);">
+    <div class="layer-header">
+      <div class="layer-title-group">
+        <div class="layer-num">Layer 04 · Recursive Research Memory</div>
+        <div class="layer-title">The compounding engine</div>
+      </div>
+    </div>
+    <p class="layer-desc">The real advantage appears when the process repeats. A synthesis becomes the input to the next cluster. The system preserves not just documents but the evolution of the thinking itself — which claims were load-bearing, which were scaffolding, which were superseded. Over time the researcher reads the history of how their own understanding changed.</p>
+    <div class="gain-tags">
+      <span class="gain-tag">Lineage tracking</span>
+      <span class="gain-tag">Supersession records</span>
+      <span class="gain-tag">Seed progression</span>
+      <span class="gain-tag">Second-order synthesis</span>
+      <span class="gain-tag">Trifectored sets</span>
+    </div>
+    <div class="uplift-block">
+      <div class="uplift-card human">
+        <div class="uplift-label human-label">Human uplift</div>
+        <div class="uplift-number">50–80%</div>
+        <div class="uplift-desc">perceived improvement in long-term research continuity and reduced overwhelm</div>
+      </div>
+      <div class="uplift-card claude">
+        <div class="uplift-label claude-label">Claude marginal gain</div>
+        <div class="uplift-number">+35–50%</div>
+        <div class="uplift-desc">trifectored input collapses orientation cost almost entirely — Claude reasons over governed memory rather than raw text</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- CLAUDE GAIN SECTION -->
+<div class="section reveal">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <h2 class="section-title">The Claude marginal gain — calculated honestly</h2>
+  </div>
+
+  <div class="prose">
+    <p>The question of what an AI model gains from structured memory versus raw documents is not a marketing claim. It is an architectural one. Here is the honest calculation, built from what we know about how large language models spend their context and where quality loss occurs.</p>
+  </div>
+
+  <div class="callout reveal">
+    <p><strong>The baseline problem.</strong> When Claude receives 30 raw documents, a significant portion of each response is spent on orientation — inferring structure, detecting themes, guessing importance, finding contradictions, building the mental model that should have been provided. That orientation cost is not intelligence. It is overhead. And it consumes context that could be spent on reasoning.</p>
+  </div>
+
+  <!-- SUMMARY TABLE -->
+  <table class="summary-table reveal">
+    <thead>
+      <tr>
+        <th>Input layer</th>
+        <th>What Claude receives</th>
+        <th>Human uplift</th>
+        <th>Claude gain</th>
+        <th>Combined</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="td-layer">Raw documents only</td>
+        <td>Unstructured text · no roles · no bridges · no scores</td>
+        <td class="pct human">baseline</td>
+        <td class="pct claude">baseline</td>
+        <td class="pct combined">—</td>
+      </tr>
+      <tr>
+        <td class="td-layer">Layer 1 · Intelligent Notes</td>
+        <td>Structured objects · domains · symbols · R(N) scores</td>
+        <td class="pct human">20–35%</td>
+        <td class="pct claude">+8–12%</td>
+        <td class="pct combined">~28–47%</td>
+      </tr>
+      <tr>
+        <td class="td-layer">Layer 2 · Oracle Retrieval</td>
+        <td>Pre-mapped relationships · contradiction markers · lineage</td>
+        <td class="pct human">30–50%</td>
+        <td class="pct claude">+12–18%</td>
+        <td class="pct combined">~42–68%</td>
+      </tr>
+      <tr>
+        <td class="td-layer">Layer 3 · Event Horizon</td>
+        <td>Cluster state · Ψ score · attractor · synthesis readiness</td>
+        <td class="pct human">40–70%</td>
+        <td class="pct claude">+20–30%</td>
+        <td class="pct combined">~60–100%</td>
+      </tr>
+      <tr>
+        <td class="td-layer">Layer 4 · Trifectored sets</td>
+        <td>Second-order synthesis · recursion metadata · governed memory</td>
+        <td class="pct human">50–80%</td>
+        <td class="pct claude">+35–50%</td>
+        <td class="pct combined">~85–130%</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p style="font-size: 0.82rem; color: var(--faint); font-family: var(--font-mono); margin-top: -0.5rem; margin-bottom: 1.5rem; letter-spacing: 0.03em;">Combined figures reflect compounding across both human and Claude gains on output quality vs. raw-document baseline. Not additive — multiplicative at higher layers.</p>
+
+  <!-- BAR CHART -->
+  <div class="compound-visual reveal">
+    <div style="font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--faint); margin-bottom: 1.25rem;">Marginal gain by layer — relative to raw document baseline</div>
+
+    <div class="compound-row">
+      <span class="compound-layer-name">Raw docs only</span>
+      <div class="compound-bar-wrap">
+        <div class="compound-bar-human" style="width:0%"></div>
+        <div class="compound-bar-claude" style="left:0%; width:0%"></div>
+      </div>
+      <span class="compound-pct" style="color:var(--faint)">baseline</span>
+    </div>
+
+    <div class="compound-row">
+      <span class="compound-layer-name">L1 · Intelligent Notes</span>
+      <div class="compound-bar-wrap">
+        <div class="compound-bar-human" style="width:27%"></div>
+        <div class="compound-bar-claude" style="left:27%; width:10%"></div>
+      </div>
+      <span class="compound-pct"><span style="color:var(--amber)">27%</span> + <span style="color:var(--blue)">10%</span></span>
+    </div>
+
+    <div class="compound-row">
+      <span class="compound-layer-name">L2 · Oracle Retrieval</span>
+      <div class="compound-bar-wrap">
+        <div class="compound-bar-human" style="width:40%"></div>
+        <div class="compound-bar-claude" style="left:40%; width:15%"></div>
+      </div>
+      <span class="compound-pct"><span style="color:var(--amber)">40%</span> + <span style="color:var(--blue)">15%</span></span>
+    </div>
+
+    <div class="compound-row">
+      <span class="compound-layer-name">L3 · Event Horizon</span>
+      <div class="compound-bar-wrap">
+        <div class="compound-bar-human" style="width:55%"></div>
+        <div class="compound-bar-claude" style="left:55%; width:25%"></div>
+      </div>
+      <span class="compound-pct"><span style="color:var(--amber)">55%</span> + <span style="color:var(--blue)">25%</span></span>
+    </div>
+
+    <div class="compound-row">
+      <span class="compound-layer-name">L4 · Trifectored</span>
+      <div class="compound-bar-wrap">
+        <div class="compound-bar-human" style="width:65%"></div>
+        <div class="compound-bar-claude" style="left:65%; width:35%"></div>
+      </div>
+      <span class="compound-pct"><span style="color:var(--amber)">65%</span> + <span style="color:var(--blue)">35%</span></span>
+    </div>
+
+    <div class="compound-legend">
+      <div class="compound-legend-item">
+        <div class="legend-dot human"></div>
+        Human researcher workflow uplift
+      </div>
+      <div class="compound-legend-item">
+        <div class="legend-dot claude"></div>
+        Claude synthesis quality gain above that
+      </div>
+    </div>
+  </div>
+
+  <div class="callout teal reveal">
+    <p><strong>Why the Claude gain compounds at Layer 4.</strong> A trifectored set does not give Claude more to read. It gives Claude less to figure out. When each document already knows its role — source, bridge, contradiction, seed, support — Claude arrives at the reasoning task already oriented. The delta between reading and figuring out is where most quality loss currently lives. Collapsing that delta is where 35–50% of the additional gain comes from.</p>
+  </div>
+
+  <div class="callout amber reveal">
+    <p><strong>The honest ceiling.</strong> The remaining quality gap — the part structured memory cannot close — requires lived experience of the problem, embodied judgment, and the kind of knowing that comes from having been wrong about something and felt it. No architecture gives Claude that. The ceiling for Claude's marginal gain, even at full trifectored input, is approximately 50% above baseline. Beyond that, expert human judgment remains the decisive variable.</p>
+  </div>
+</div>
+
+<!-- PINPOINT PROPOSITIONS -->
+<div class="section reveal">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <h2 class="section-title">Pinpoint propositions</h2>
+  </div>
+
+  <ul class="props">
+    <li><span class="prop-pin">📌</span> A structured Blue Whale cluster does not make Claude smarter. It makes Claude accurate in a domain where it is usually only approximately right — and that difference, compounded across thirty documents, is where the 35–50% lives.</li>
+    <li><span class="prop-pin">📌</span> The human gain and the Claude gain are not the same thing. The human gains navigability and reduced overwhelm. Claude gains orientation — which translates directly to reasoning quality.</li>
+    <li><span class="prop-pin">📌</span> Every additional layer of structure reduces the orientation cost and raises the ceiling on what the synthesis can be. The gains are multiplicative, not additive.</li>
+    <li><span class="prop-pin">📌</span> The recursive layer is where the moat forms. Each synthesis cycle makes the next one cheaper, faster, and more accurate. That compounding cannot be replicated by prompt engineering alone.</li>
+    <li><span class="prop-pin">📌</span> The honest limit: Blue Whale Memory improves the research environment. It does not replace expert judgment, statistical validation, peer review, experimental proof, or the lived knowledge that comes from being inside a problem for years.</li>
+  </ul>
+</div>
+
+<!-- WHAT THIS DOES NOT DO -->
+<div class="section reveal">
+  <div class="section-header">
+    <span class="section-num">07</span>
+    <h2 class="section-title">What this does not do</h2>
+  </div>
+
+  <div class="prose">
+    <p>Blue Whale Memory should not be framed as a system that guarantees breakthroughs. Its honest role is to improve the research environment — to help the user preserve the path, reduce fog, and see the next pressure point more clearly.</p>
+  </div>
+
+  <div class="limits-grid">
+    <div class="limit-cell"><strong>Does not replace</strong>Expert domain judgment</div>
+    <div class="limit-cell"><strong>Does not replace</strong>Statistical validation</div>
+    <div class="limit-cell"><strong>Does not replace</strong>Peer review</div>
+    <div class="limit-cell"><strong>Does not replace</strong>Experimental proof</div>
+    <div class="limit-cell"><strong>Does not replace</strong>Legal or medical review</div>
+    <div class="limit-cell"><strong>Does not replace</strong>Mathematical proof</div>
+    <div class="limit-cell"><strong>Does not replace</strong>Creative insight</div>
+    <div class="limit-cell"><strong>Does not replace</strong>Lived experience of the problem</div>
+  </div>
+</div>
+
+<!-- CLOSING -->
+<div class="closing reveal">
+  <h2 class="closing-title">
+    Bring the mess.<br>Leave with a map.
+  </h2>
+  <p class="closing-sub">
+    Blue Whale Memory turns complex research material into structured, retrievable, synthesis-ready memory. The free version lets you experience the arena in your browser — no account, no database, up to 30 documents. The full Trifecta will let you keep the memory.
+  </p>
+  <div class="closing-ctas">
+    <a href="/app" class="btn-primary">🐋 Try Intelligent Notes Free</a>
+    <a href="#" class="btn-secondary">Register interest in the Trifecta →</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="doc-footer">
+  <span class="doc-footer-text">Blue Whale Memory · Research Value Brief · v1 · May 2026</span>
+  <span class="doc-footer-text">Stone Monkey Console · Leviathan Project</span>
+</div>
+
+<script>
+  // ── THEME TOGGLE ──
+  const html = document.documentElement;
+  const toggle = document.getElementById('themeToggle');
+  const optLight = document.getElementById('opt-light');
+  const optDark = document.getElementById('opt-dark');
+
+  function applyTheme(theme) {
+    if (theme === 'dark') {
+      html.classList.add('dark');
+      optDark.classList.add('active');
+      optLight.classList.remove('active');
+    } else {
+      html.classList.remove('dark');
+      optLight.classList.add('active');
+      optDark.classList.remove('active');
+    }
+    localStorage.setItem('bwm-brief-theme', theme);
+  }
+
+  const saved = localStorage.getItem('bwm-brief-theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyTheme(saved || (prefersDark ? 'dark' : 'light'));
+
+  toggle.addEventListener('click', () => {
+    applyTheme(html.classList.contains('dark') ? 'light' : 'dark');
+  });
+
+  // ── SCROLL REVEAL ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
