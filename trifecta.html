@@ -6,817 +6,363 @@
 <title>Blue Whale Memory — Research Value Brief</title>
 <meta name="description" content="How Blue Whale Memory improves complex research projects — and what the Claude marginal gain looks like at each layer.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Instrument+Sans:wght@400;500;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
 
 /* ── RESET ── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
-/* ── TOKENS ── */
-:root {
-  --paper:      #faf8f4;
-  --paper2:     #f3f0ea;
-  --paper3:     #ece8df;
-  --ink:        #1a1612;
-  --ink2:       #3d3830;
-  --muted:      #7a7268;
-  --faint:      #b8b0a4;
-  --rule:       rgba(60,50,30,0.12);
-  --rule-strong:rgba(60,50,30,0.22);
-  --blue:       #1d4ed8;
-  --blue-dim:   rgba(29,78,216,0.07);
-  --teal:       #0f7a63;
-  --teal-dim:   rgba(15,122,99,0.07);
-  --amber:      #92400e;
-  --amber-dim:  rgba(146,64,14,0.07);
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-body:    'Source Serif 4', Georgia, serif;
-  --font-mono:    'DM Mono', monospace;
-  --max: 860px;
-  --pad: clamp(1.5rem, 6vw, 4rem);
+/* ── TOKENS — dark default ── */
+:root{
+  --ink:        #0a0d13;
+  --deep:       #060810;
+  --surface:    #0e1420;
+  --surface2:   #141c2e;
+  --border:     rgba(100,140,220,0.12);
+  --border-mid: rgba(100,140,220,0.07);
+  --text:       #dce6f5;
+  --muted:      #6e87a8;
+  --faint:      #2e3d55;
+  --accent:     #4f8ef7;
+  --accent-dim: rgba(79,142,247,0.10);
+  --teal:       #3ecfa8;
+  --teal-dim:   rgba(62,207,168,0.08);
+  --amber:      #f59e0b;
+  --amber-dim:  rgba(245,158,11,0.09);
+  --fd:'Cormorant Garamond',Georgia,serif;
+  --fb:'Instrument Sans',sans-serif;
+  --fm:'DM Mono',monospace;
+  --max:860px;
+  --pad:clamp(1.5rem,6vw,4rem);
+  --rad:20px;
+  --nav-top:rgba(6,8,16,0.97);
+  --nav-mid:rgba(6,8,16,0.70);
 }
 
-/* ── DARK MODE ── */
-html.dark {
-  --paper:       #0e0c09;
-  --paper2:      #161310;
-  --paper3:      #1e1a15;
-  --ink:         #e8e0d4;
-  --ink2:        #c4b9a8;
-  --muted:       #7a6e60;
-  --faint:       #3a3228;
-  --rule:        rgba(200,180,140,0.10);
-  --rule-strong: rgba(200,180,140,0.20);
-  --blue:        #6096f5;
-  --blue-dim:    rgba(96,150,245,0.10);
-  --teal:        #3ecfa8;
-  --teal-dim:    rgba(62,207,168,0.09);
-  --amber:       #d97706;
-  --amber-dim:   rgba(217,119,6,0.09);
+/* ── LIGHT MODE ── */
+html.light{
+  --ink:        #f5f4f0;
+  --deep:       #eceae4;
+  --surface:    #faf9f7;
+  --surface2:   #f0ede8;
+  --border:     rgba(60,80,140,0.12);
+  --border-mid: rgba(60,80,140,0.07);
+  --text:       #1a2236;
+  --muted:      #4a5a7a;
+  --faint:      #8a9ab8;
+  --accent:     #2d6ef0;
+  --accent-dim: rgba(45,110,240,0.10);
+  --teal:       #0d8f72;
+  --teal-dim:   rgba(13,143,114,0.08);
+  --amber:      #b45309;
+  --amber-dim:  rgba(180,83,9,0.08);
+  --nav-top:rgba(238,241,248,0.97);
+  --nav-mid:rgba(238,241,248,0.50);
 }
 
-html.dark body {
-  background:
-    radial-gradient(ellipse 70% 40% at 80% 5%, rgba(96,150,245,0.05) 0%, transparent 60%),
-    var(--paper);
-}
+html.light .uplift-card.claude{background:rgba(45,110,240,0.06);border-color:rgba(45,110,240,0.15)}
+html.light .callout{background:rgba(45,110,240,0.06);border-color:rgba(45,110,240,0.18)}
+html.light .callout.amber{background:rgba(180,83,9,0.06);border-color:rgba(180,83,9,0.18)}
+html.light .callout.teal{background:rgba(13,143,114,0.06);border-color:rgba(13,143,114,0.18)}
+html.light .summary-table thead th{background:var(--surface2)}
+html.light .closing-quote{border-color:rgba(79,142,247,0.25)}
 
-html.dark .summary-table thead th { background: var(--paper2); }
-html.dark .uplift-card.claude { background: rgba(96,150,245,0.08); border-color: rgba(96,150,245,0.18); }
-html.dark .callout { background: rgba(96,150,245,0.08); border-color: rgba(96,150,245,0.2); }
-html.dark .callout.amber { background: rgba(217,119,6,0.08); border-color: rgba(217,119,6,0.2); }
-html.dark .callout.teal { background: rgba(62,207,168,0.08); border-color: rgba(62,207,168,0.2); }
-
-/* smooth theme transition */
-html, body, .masthead, .cover, .layer, .uplift-card,
-.callout, .limit-cell, .compound-visual, .summary-table thead th,
-.summary-table tbody td, .closing, .doc-footer, .props li {
-  transition: background 0.35s ease, color 0.35s ease, border-color 0.35s ease;
-}
-
-/* ── THEME TOGGLE ── */
-.theme-toggle {
-  display: flex;
-  align-items: center;
-  background: var(--paper2);
-  border: 1px solid var(--rule-strong);
-  border-radius: 20px;
-  padding: 3px;
-  cursor: pointer;
-  gap: 0;
-  flex-shrink: 0;
-  align-self: center;
-}
-
-.theme-toggle-option {
-  width: 28px;
-  height: 24px;
-  border-radius: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  opacity: 0.35;
-  transition: background 0.2s, opacity 0.2s;
-  line-height: 1;
-}
-
-.theme-toggle-option.active {
-  background: var(--paper);
-  opacity: 1;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+/* smooth transition */
+html,body,nav,.layer,.uplift-card,.callout,.limit-cell,
+.compound-visual,.summary-table thead th,.summary-table tbody td,
+.closing,.doc-footer,.props li,.closing-quote{
+  transition:background .35s ease,color .35s ease,border-color .35s ease
 }
 
 /* ── BASE ── */
-html {
-  background: var(--paper);
-  color: var(--ink);
-  font-family: var(--font-body);
-  font-size: 17px;
-  line-height: 1.75;
-  -webkit-font-smoothing: antialiased;
-}
+html{background:var(--deep);color:var(--text);font-family:var(--fb);font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased}
 
-body {
-  max-width: var(--max);
-  margin: 0 auto;
-  padding: 0 var(--pad) 6rem;
-}
+body{max-width:var(--max);margin:0 auto;padding:5rem var(--pad) 6rem}
 
-/* ── MASTHEAD ── */
-.masthead {
-  padding: 3rem 0 2.5rem;
-  border-bottom: 1px solid var(--rule-strong);
-  margin-bottom: 3rem;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 1rem;
+/* ── NAV — matches homepage exactly ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:1.25rem var(--pad);
+  display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(to bottom,var(--nav-top),var(--nav-mid));
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border-bottom:0.5px solid var(--border-mid)
 }
-
-.masthead-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
+.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-whale{font-size:22px;line-height:1}
+.nav-name{font-family:var(--fm);font-size:13px;color:var(--text);letter-spacing:.02em}
+.nav-name span{display:block;font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:1px}
+.nav-actions{display:flex;align-items:center;gap:1rem;flex-wrap:nowrap}
+.nav-doc{font-family:var(--fm);font-size:10px;color:var(--faint);letter-spacing:.1em;text-transform:uppercase}
+.back-link{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--fm);font-size:11px;letter-spacing:.06em;
+  color:var(--muted);text-decoration:none;
+  padding:5px 12px;border:0.5px solid var(--border);
+  border-radius:var(--rad);background:var(--surface);
+  transition:color .2s,border-color .2s
 }
+.back-link:hover{color:var(--teal);border-color:rgba(62,207,168,.3)}
 
-.masthead-whale { font-size: 24px; line-height: 1; }
-
-.masthead-name {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--muted);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  line-height: 1.5;
+/* ── THEME TOGGLE ── */
+.theme-toggle{
+  display:flex;align-items:center;
+  background:var(--surface2);border:.5px solid var(--border);
+  border-radius:var(--rad);padding:3px;cursor:pointer
 }
-
-.masthead-name strong {
-  display: block;
-  color: var(--ink2);
-  font-weight: 400;
-  font-size: 13px;
+.theme-toggle-option{
+  display:flex;align-items:center;justify-content:center;
+  width:28px;height:24px;border-radius:16px;
+  font-size:13px;opacity:.4;line-height:1;transition:background .2s,opacity .2s
 }
-
-.masthead-meta {
-  text-align: right;
-}
-
-.masthead-label {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--faint);
-  display: block;
-  margin-bottom: 3px;
-}
-
-.masthead-doc {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--muted);
-}
+.theme-toggle-option.active{background:var(--surface);opacity:1;box-shadow:0 1px 3px rgba(0,0,0,.15)}
 
 /* ── COVER ── */
-.cover {
-  padding: 3rem 0 3.5rem;
-  border-bottom: 1px solid var(--rule);
-  margin-bottom: 3.5rem;
+.cover{
+  padding:3rem 0 3.5rem;
+  border-bottom:0.5px solid var(--border);
+  margin-bottom:3.5rem
 }
-
-.cover-eyebrow {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--blue);
-  margin-bottom: 1.25rem;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.cover-eyebrow{
+  font-family:var(--fm);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--accent);
+  margin-bottom:1.25rem;display:flex;align-items:center;gap:10px
 }
-
-.cover-eyebrow::before {
-  content: '';
-  display: inline-block;
-  width: 24px;
-  height: 1px;
-  background: var(--blue);
+.cover-eyebrow::before{content:'';display:inline-block;width:24px;height:1px;background:var(--accent)}
+.cover-title{
+  font-family:var(--fd);font-size:clamp(2.4rem,5vw,3.75rem);
+  font-weight:300;line-height:1.1;color:var(--text);
+  margin-bottom:1.5rem;letter-spacing:-.01em
 }
-
-.cover-title {
-  font-family: var(--font-display);
-  font-size: clamp(2.4rem, 5vw, 3.75rem);
-  font-weight: 400;
-  line-height: 1.1;
-  color: var(--ink);
-  margin-bottom: 1.5rem;
-  letter-spacing: -0.02em;
+.cover-title em{font-style:italic;color:var(--accent)}
+.cover-standfirst{
+  font-family:var(--fd);font-size:1.2rem;font-weight:300;font-style:italic;
+  color:var(--muted);line-height:1.65;max-width:600px;
+  margin-bottom:2rem;border-left:2px solid rgba(79,142,247,.35);padding-left:1.25rem
 }
-
-.cover-title em {
-  font-style: italic;
-  color: var(--ink2);
-}
-
-.cover-standfirst {
-  font-size: 1.2rem;
-  font-weight: 300;
-  font-style: italic;
-  color: var(--ink2);
-  line-height: 1.65;
-  max-width: 620px;
-  margin-bottom: 2rem;
-  border-left: 3px solid var(--blue);
-  padding-left: 1.25rem;
-}
-
-.cover-meta-row {
-  display: flex;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-
-.cover-meta-item {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--muted);
-  letter-spacing: 0.04em;
-}
-
-.cover-meta-item strong {
-  display: block;
-  color: var(--ink2);
-  font-weight: 400;
-  margin-bottom: 2px;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+.cover-meta-row{display:flex;gap:2rem;flex-wrap:wrap}
+.cover-meta-item{font-family:var(--fm);font-size:11px;color:var(--muted);letter-spacing:.04em}
+.cover-meta-item strong{
+  display:block;color:var(--faint);font-weight:400;
+  margin-bottom:2px;font-size:10px;text-transform:uppercase;letter-spacing:.1em
 }
 
 /* ── PROSE ── */
-.prose {
-  margin-bottom: 3.5rem;
+.prose{margin-bottom:3.5rem}
+.prose p{margin-bottom:1.25rem;color:var(--muted);font-size:.95rem;line-height:1.8}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--text);font-weight:500}
+
+/* ── SECTIONS ── */
+.section{margin-bottom:3.5rem}
+.section-header{
+  display:flex;align-items:baseline;gap:1rem;
+  margin-bottom:1.5rem;padding-bottom:.75rem;
+  border-bottom:0.5px solid var(--border)
 }
+.section-num{font-family:var(--fm);font-size:11px;color:var(--faint);letter-spacing:.08em;flex-shrink:0}
+.section-title{font-family:var(--fd);font-size:1.6rem;font-weight:300;font-style:italic;color:var(--text);line-height:1.2}
 
-.prose p {
-  margin-bottom: 1.25rem;
-  color: var(--ink2);
-  font-size: 1rem;
-  line-height: 1.8;
+/* ── HONESTY NOTE ── */
+.honesty-note{
+  background:var(--surface);border:0.5px solid var(--border);
+  border-left:2px solid var(--faint);
+  border-radius:0 3px 3px 0;
+  padding:1rem 1.25rem;margin-bottom:2.5rem;
+  font-family:var(--fm);font-size:11px;color:var(--faint);
+  letter-spacing:.04em;line-height:1.7
 }
-
-.prose p:last-child { margin-bottom: 0; }
-
-.prose strong { color: var(--ink); font-weight: 500; }
-
-/* ── SECTION HEADERS ── */
-.section {
-  margin-bottom: 3.5rem;
-}
-
-.section-header {
-  display: flex;
-  align-items: baseline;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--rule);
-}
-
-.section-num {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--faint);
-  letter-spacing: 0.08em;
-  flex-shrink: 0;
-}
-
-.section-title {
-  font-family: var(--font-display);
-  font-size: 1.6rem;
-  font-weight: 400;
-  font-style: italic;
-  color: var(--ink);
-  line-height: 1.2;
-}
+.honesty-note strong{color:var(--muted);font-weight:400}
 
 /* ── LAYER CARDS ── */
-.layer {
-  background: var(--paper2);
-  border: 1px solid var(--rule);
-  border-radius: 3px;
-  padding: 2rem;
-  margin-bottom: 1.5rem;
-  position: relative;
-  overflow: hidden;
+.layer{
+  background:var(--surface);border:0.5px solid var(--border);
+  border-radius:3px;padding:2rem;margin-bottom:1.5rem;
+  position:relative;overflow:hidden
 }
+.layer::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px}
+.layer.l1::before{background:var(--accent)}
+.layer.l2::before{background:var(--teal)}
+.layer.l3::before{background:var(--amber)}
+.layer.l4::before{background:#a78bfa}
 
-.layer::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 3px;
+.layer-num{font-family:var(--fm);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:4px}
+.layer-title{font-family:var(--fd);font-size:1.3rem;font-weight:300;color:var(--text);line-height:1.2;margin-bottom:1rem}
+.layer-desc{font-size:.9rem;color:var(--muted);line-height:1.75;margin-bottom:1.25rem}
+
+.uplift-block{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:1.25rem}
+.uplift-card{border-radius:3px;padding:1rem 1.25rem;border:0.5px solid var(--border)}
+.uplift-card.human{background:var(--surface2)}
+.uplift-card.claude{background:rgba(79,142,247,.08);border-color:rgba(79,142,247,.18)}
+
+.uplift-label{font-family:var(--fm);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:6px}
+.uplift-label.human-label{color:var(--amber)}
+.uplift-label.claude-label{color:var(--accent)}
+
+.uplift-number{font-family:var(--fd);font-size:2rem;font-weight:300;line-height:1;margin-bottom:4px;color:var(--text)}
+.uplift-card.claude .uplift-number{color:var(--accent)}
+.uplift-card.human .uplift-number{color:var(--amber)}
+.uplift-desc{font-size:11px;color:var(--muted);line-height:1.5;font-family:var(--fm)}
+
+.gain-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:1rem}
+.gain-tag{font-family:var(--fm);font-size:10px;padding:2px 8px;border-radius:2px;border:0.5px solid var(--border);color:var(--faint);background:var(--ink)}
+
+/* ── TABLE ── */
+.summary-table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:.85rem}
+.summary-table thead th{
+  font-family:var(--fm);font-size:10px;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--muted);padding:10px 14px;border-bottom:0.5px solid var(--border);
+  text-align:left;font-weight:400;background:var(--surface)
 }
+.summary-table tbody td{padding:12px 14px;border-bottom:0.5px solid var(--border-mid);color:var(--muted);vertical-align:top;line-height:1.5}
+.summary-table tbody tr:last-child td{border-bottom:none}
+.summary-table tbody tr:hover td{background:var(--surface)}
+.summary-table .td-layer{font-weight:500;color:var(--text);white-space:nowrap}
+.pct{font-family:var(--fm);font-size:13px}
+.pct.human{color:var(--amber)}
+.pct.claude{color:var(--accent)}
+.pct.combined{color:var(--teal)}
 
-.layer.l1::before { background: var(--blue); }
-.layer.l2::before { background: var(--teal); }
-.layer.l3::before { background: var(--amber); }
-.layer.l4::before { background: #7c3aed; }
-
-.layer-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  flex-wrap: wrap;
-}
-
-.layer-title-group { flex: 1; }
-
-.layer-num {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--faint);
-  margin-bottom: 4px;
-}
-
-.layer-title {
-  font-family: var(--font-display);
-  font-size: 1.3rem;
-  font-weight: 400;
-  color: var(--ink);
-  line-height: 1.2;
-}
-
-.layer-desc {
-  font-size: 0.95rem;
-  color: var(--muted);
-  line-height: 1.7;
-  margin-bottom: 1.25rem;
-}
-
-/* uplift block */
-.uplift-block {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 1.25rem;
-}
-
-.uplift-card {
-  border-radius: 3px;
-  padding: 1rem 1.25rem;
-  border: 1px solid var(--rule);
-}
-
-.uplift-card.human { background: var(--paper3); }
-.uplift-card.claude { background: #f0f4ff; border-color: rgba(29,78,216,0.15); }
-
-.uplift-label {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--faint);
-  margin-bottom: 6px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.uplift-label.human-label { color: var(--amber); }
-.uplift-label.claude-label { color: var(--blue); }
-
-.uplift-number {
-  font-family: var(--font-display);
-  font-size: 2rem;
-  font-weight: 400;
-  line-height: 1;
-  margin-bottom: 4px;
-  color: var(--ink);
-}
-
-.uplift-card.claude .uplift-number { color: var(--blue); }
-.uplift-card.human .uplift-number { color: var(--amber); }
-
-.uplift-desc {
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.5;
-  font-family: var(--font-mono);
-}
-
-/* gain tags */
-.gain-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 1rem;
-}
-
-.gain-tag {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  padding: 3px 9px;
-  border-radius: 2px;
-  border: 1px solid var(--rule);
-  color: var(--muted);
-  background: var(--paper);
-}
-
-/* ── SUMMARY TABLE ── */
-.summary-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 1.5rem 0;
-  font-size: 0.9rem;
-}
-
-.summary-table thead th {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--muted);
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--rule-strong);
-  text-align: left;
-  font-weight: 400;
-  background: var(--paper2);
-}
-
-.summary-table tbody td {
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--rule);
-  color: var(--ink2);
-  vertical-align: top;
-  line-height: 1.5;
-}
-
-.summary-table tbody tr:last-child td { border-bottom: none; }
-.summary-table tbody tr:hover td { background: var(--paper2); }
-
-.summary-table .td-layer {
-  font-weight: 500;
-  color: var(--ink);
-  white-space: nowrap;
-}
-
-.pct {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 400;
-}
-
-.pct.human { color: var(--amber); }
-.pct.claude { color: var(--blue); }
-.pct.combined { color: var(--teal); font-weight: 500; }
-
-/* ── COMPOUND GAIN VISUAL ── */
-.compound-visual {
-  background: var(--paper2);
-  border: 1px solid var(--rule);
-  border-radius: 3px;
-  padding: 2rem;
-  margin: 1.5rem 0;
-}
-
-.compound-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 10px;
-}
-
-.compound-row:last-child { margin-bottom: 0; }
-
-.compound-layer-name {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--muted);
-  width: 160px;
-  flex-shrink: 0;
-  letter-spacing: 0.03em;
-}
-
-.compound-bar-wrap {
-  flex: 1;
-  height: 28px;
-  background: var(--paper3);
-  border-radius: 2px;
-  overflow: hidden;
-  position: relative;
-  border: 1px solid var(--rule);
-}
-
-.compound-bar-human {
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  background: rgba(146,64,14,0.18);
-  border-right: 1px solid rgba(146,64,14,0.3);
-}
-
-.compound-bar-claude {
-  position: absolute;
-  top: 0; bottom: 0;
-  background: rgba(29,78,216,0.15);
-  border-right: 1px solid rgba(29,78,216,0.3);
-}
-
-.compound-pct {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  width: 80px;
-  text-align: right;
-  flex-shrink: 0;
-}
-
-.compound-legend {
-  display: flex;
-  gap: 1.5rem;
-  margin-top: 1.25rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--rule);
-}
-
-.compound-legend-item {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--muted);
-}
-
-.legend-dot {
-  width: 12px; height: 12px;
-  border-radius: 2px;
-  flex-shrink: 0;
-}
-
-.legend-dot.human { background: rgba(146,64,14,0.25); border: 1px solid rgba(146,64,14,0.4); }
-.legend-dot.claude { background: rgba(29,78,216,0.20); border: 1px solid rgba(29,78,216,0.35); }
+/* ── BAR CHART ── */
+.compound-visual{background:var(--surface);border:0.5px solid var(--border);border-radius:3px;padding:2rem;margin:1.5rem 0}
+.compound-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.compound-row:last-child{margin-bottom:0}
+.compound-layer-name{font-family:var(--fm);font-size:11px;color:var(--muted);width:160px;flex-shrink:0;letter-spacing:.03em}
+.compound-bar-wrap{flex:1;height:26px;background:var(--surface2);border-radius:2px;overflow:hidden;position:relative;border:0.5px solid var(--border)}
+.compound-bar-human{position:absolute;left:0;top:0;bottom:0;background:rgba(245,158,11,.20);border-right:1px solid rgba(245,158,11,.35)}
+.compound-bar-claude{position:absolute;top:0;bottom:0;background:rgba(79,142,247,.18);border-right:1px solid rgba(79,142,247,.35)}
+.compound-pct{font-family:var(--fm);font-size:11px;width:80px;text-align:right;flex-shrink:0}
+.compound-legend{display:flex;gap:1.5rem;margin-top:1.25rem;padding-top:1rem;border-top:0.5px solid var(--border)}
+.compound-legend-item{display:flex;align-items:center;gap:7px;font-family:var(--fm);font-size:11px;color:var(--muted)}
+.legend-dot{width:12px;height:12px;border-radius:2px;flex-shrink:0}
+.legend-dot.human{background:rgba(245,158,11,.25);border:1px solid rgba(245,158,11,.4)}
+.legend-dot.claude{background:rgba(79,142,247,.20);border:1px solid rgba(79,142,247,.35)}
 
 /* ── CALLOUT ── */
-.callout {
-  background: var(--blue-dim);
-  border: 1px solid rgba(29,78,216,0.18);
-  border-left: 3px solid var(--blue);
-  border-radius: 0 3px 3px 0;
-  padding: 1.25rem 1.5rem;
-  margin: 1.5rem 0;
+.callout{
+  background:var(--accent-dim);border:0.5px solid rgba(79,142,247,.18);
+  border-left:2px solid var(--accent);border-radius:0 3px 3px 0;
+  padding:1.25rem 1.5rem;margin:1.5rem 0
 }
+.callout.amber{background:var(--amber-dim);border-color:rgba(245,158,11,.18);border-left-color:var(--amber)}
+.callout.teal{background:var(--teal-dim);border-color:rgba(62,207,168,.18);border-left-color:var(--teal)}
+.callout p{font-size:.9rem;color:var(--muted);line-height:1.75;margin:0}
+.callout strong{color:var(--text)}
 
-.callout.amber {
-  background: var(--amber-dim);
-  border-color: rgba(146,64,14,0.18);
-  border-left-color: var(--amber);
+/* ── PROPS ── */
+.props{list-style:none;margin:1rem 0}
+.props li{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--border-mid);font-size:.9rem;color:var(--muted);line-height:1.65}
+.props li:last-child{border-bottom:none}
+.prop-pin{flex-shrink:0;font-size:14px;margin-top:1px;opacity:.7}
+
+/* ── LIMITS ── */
+.limits-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:1rem 0}
+.limit-cell{background:var(--surface);border:0.5px solid var(--border);border-radius:3px;padding:1rem 1.25rem;font-size:.85rem;color:var(--muted);line-height:1.6;font-family:var(--fm)}
+.limit-cell strong{display:block;color:var(--faint);margin-bottom:4px;font-size:10px;text-transform:uppercase;letter-spacing:.08em}
+
+/* ── CLOSING ── */
+.closing{border-top:0.5px solid var(--border);padding-top:3rem;margin-top:3rem;text-align:center}
+.closing-title{font-family:var(--fd);font-size:clamp(1.6rem,3vw,2.4rem);font-weight:300;font-style:italic;color:var(--text);line-height:1.3;margin-bottom:1rem}
+.closing-sub{font-size:.9rem;color:var(--muted);max-width:500px;margin:0 auto 2rem;line-height:1.75}
+.closing-ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:3rem}
+
+.btn-primary{
+  display:inline-flex;align-items:center;gap:6px;
+  background:linear-gradient(135deg,rgba(62,207,168,.12),rgba(79,142,247,.10));
+  color:var(--teal);border:1px solid rgba(62,207,168,.40);border-radius:var(--rad);
+  padding:8px 20px;font-family:var(--fm);font-size:12px;letter-spacing:.05em;
+  text-decoration:none;cursor:pointer;transition:all .2s
 }
+.btn-primary:hover{background:linear-gradient(135deg,rgba(62,207,168,.22),rgba(79,142,247,.16));border-color:rgba(62,207,168,.7)}
 
-.callout.teal {
-  background: var(--teal-dim);
-  border-color: rgba(15,122,99,0.18);
-  border-left-color: var(--teal);
+.btn-secondary{
+  display:inline-flex;align-items:center;gap:6px;
+  background:transparent;color:var(--muted);
+  border:0.5px solid var(--border);border-radius:var(--rad);
+  padding:7px 18px;font-family:var(--fm);font-size:12px;letter-spacing:.05em;
+  text-decoration:none;cursor:pointer;transition:color .2s,border-color .2s
 }
+.btn-secondary:hover{color:var(--text);border-color:rgba(100,140,220,.3)}
 
-.callout p {
-  font-size: 0.95rem;
-  color: var(--ink2);
-  line-height: 1.7;
-  margin: 0;
+/* ── CLOSING QUOTE ── */
+.closing-quote{
+  max-width:580px;margin:0 auto;
+  border-top:0.5px solid rgba(79,142,247,.2);
+  padding-top:2.5rem;
+  text-align:center
 }
-
-.callout strong { color: var(--ink); }
-
-/* ── PROPOSITION LIST ── */
-.props {
-  list-style: none;
-  margin: 1rem 0;
+.closing-quote blockquote{
+  font-family:var(--fd);font-size:clamp(1.1rem,2vw,1.5rem);
+  font-weight:300;font-style:italic;
+  color:var(--muted);line-height:1.6;margin-bottom:1rem
 }
-
-.props li {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--rule);
-  font-size: 0.95rem;
-  color: var(--ink2);
-  line-height: 1.65;
-}
-
-.props li:last-child { border-bottom: none; }
-
-.prop-pin {
-  flex-shrink: 0;
-  font-size: 14px;
-  margin-top: 1px;
-  opacity: 0.7;
-}
-
-/* ── HONEST LIMITS ── */
-.limits-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin: 1rem 0;
-}
-
-.limit-cell {
-  background: var(--paper2);
-  border: 1px solid var(--rule);
-  border-radius: 3px;
-  padding: 1rem 1.25rem;
-  font-size: 0.88rem;
-  color: var(--muted);
-  line-height: 1.6;
-  font-family: var(--font-mono);
-}
-
-.limit-cell strong {
-  display: block;
-  color: var(--ink2);
-  margin-bottom: 4px;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-/* ── CLOSING STATEMENT ── */
-.closing {
-  border-top: 1px solid var(--rule-strong);
-  padding-top: 3rem;
-  margin-top: 3rem;
-  text-align: center;
-}
-
-.closing-title {
-  font-family: var(--font-display);
-  font-size: clamp(1.6rem, 3vw, 2.4rem);
-  font-weight: 400;
-  font-style: italic;
-  color: var(--ink);
-  line-height: 1.3;
-  margin-bottom: 1rem;
-}
-
-.closing-sub {
-  font-size: 0.95rem;
-  color: var(--muted);
-  max-width: 520px;
-  margin: 0 auto 2rem;
-  line-height: 1.75;
-}
-
-.closing-ctas {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.btn-primary {
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 400;
-  padding: 12px 28px;
-  background: var(--blue);
-  color: #fff;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-  text-decoration: none;
-  letter-spacing: 0.01em;
-  transition: opacity 0.2s;
-}
-
-.btn-primary:hover { opacity: 0.85; }
-
-.btn-secondary {
-  font-family: var(--font-body);
-  font-size: 14px;
-  padding: 11px 24px;
-  background: transparent;
-  color: var(--muted);
-  border: 1px solid var(--rule-strong);
-  border-radius: 3px;
-  cursor: pointer;
-  text-decoration: none;
-  transition: color 0.2s, border-color 0.2s;
-}
-
-.btn-secondary:hover { color: var(--ink); border-color: var(--rule-strong); }
+.closing-quote blockquote em{color:var(--text);font-style:normal}
+.closing-quote cite{font-family:var(--fm);font-size:10px;color:var(--faint);letter-spacing:.1em;text-transform:uppercase}
 
 /* ── FOOTER ── */
-.doc-footer {
-  margin-top: 4rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--rule);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
+.doc-footer{
+  margin-top:4rem;padding-top:1.5rem;border-top:0.5px solid var(--border-mid);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem
 }
-
-.doc-footer-text {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--faint);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-/* ── PRINT ── */
-@media print {
-  body { max-width: 100%; padding: 2cm; font-size: 11pt; }
-  .closing-ctas { display: none; }
-  .layer { break-inside: avoid; }
-}
+.doc-footer-text{font-family:var(--fm);font-size:10px;color:var(--faint);letter-spacing:.06em;text-transform:uppercase}
 
 /* ── RESPONSIVE ── */
-@media (max-width: 600px) {
-  .uplift-block { grid-template-columns: 1fr; }
-  .limits-grid { grid-template-columns: 1fr; }
-  .compound-layer-name { width: 100px; font-size: 10px; }
-  .summary-table { font-size: 0.8rem; }
-  .cover-meta-row { flex-direction: column; gap: 1rem; }
+@media(max-width:600px){
+  .uplift-block{grid-template-columns:1fr}
+  .limits-grid{grid-template-columns:1fr}
+  .compound-layer-name{width:90px;font-size:10px}
+  .summary-table{font-size:.78rem}
+  .cover-meta-row{flex-direction:column;gap:1rem}
+  .nav-doc{display:none}
 }
 
 /* ── SCROLL REVEAL ── */
-.reveal {
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ── PRINT ── */
+@media print{
+  body{max-width:100%;padding:2cm;font-size:11pt}
+  nav,.closing-ctas{display:none}
+  .layer{break-inside:avoid}
 }
-.reveal.visible { opacity: 1; transform: translateY(0); }
 
 </style>
 </head>
 <body>
 
-<!-- MASTHEAD -->
-<div class="masthead">
-  <div class="masthead-brand">
-    <span class="masthead-whale">🐋</span>
-    <span class="masthead-name">
-      <strong>Blue Whale Memory</strong>
-      bluewhalememory.com
+<!-- NAV — matches homepage -->
+<nav>
+  <a class="nav-brand" href="https://bluewhalememory.com/">
+    <span class="nav-whale">🐋</span>
+    <span class="nav-name">
+      Blue Whale Memory
+      <span>Research Value Brief</span>
     </span>
-  </div>
-  <div class="masthead-meta">
-    <span class="masthead-label">Document type</span>
-    <span class="masthead-doc">Research Value Brief · Stone Monkey / Leviathan Project</span>
-  </div>
-  <div style="display:flex; align-items:center; gap:10px;">
-    <a href="/index.html"
-       target="_blank"
-       style="display:inline-flex; align-items:center; gap:7px; font-family:var(--font-mono); font-size:11px; letter-spacing:0.06em; color:var(--muted); text-decoration:none; padding:6px 14px; border:1px solid var(--rule-strong); border-radius:3px; background:var(--paper2); transition:color 0.2s, border-color 0.2s;"
-       onmouseover="this.style.color='var(--ink)'; this.style.borderColor='var(--rule-strong)'"
-       onmouseout="this.style.color='var(--muted)'; this.style.borderColor='var(--rule-strong)'">
-      🐋 &nbsp;← Homepage
-    </a>
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark theme" title="Toggle theme">
-      <span class="theme-toggle-option" id="opt-light">☀️</span>
+  </a>
+  <div class="nav-actions">
+    <span class="nav-doc">Intelligent Notes · v1 · May 2026</span>
+    <a href="https://bluewhalememory.com/" class="back-link">← Homepage</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
       <span class="theme-toggle-option" id="opt-dark">🌙</span>
+      <span class="theme-toggle-option" id="opt-light">☀️</span>
     </button>
   </div>
-</div>
+</nav>
 
 <!-- COVER -->
 <div class="cover">
   <div class="cover-eyebrow">For researchers, writers, and builders working with complex documents</div>
-  <h1 class="cover-title">
-    Blue Whale Memory<br>
-    <em>Research Value Brief</em>
-  </h1>
+  <h1 class="cover-title">Blue Whale Memory<br><em>Research Value Brief</em></h1>
   <p class="cover-standfirst">
     Blue Whale Memory does not promise the answer. It preserves the path well enough that the next question becomes clearer.
   </p>
   <div class="cover-meta-row">
-    <div class="cover-meta-item">
-      <strong>Status</strong>
-      current_truth
-    </div>
-    <div class="cover-meta-item">
-      <strong>Confidence</strong>
-      reasoned · provisional
-    </div>
-    <div class="cover-meta-item">
-      <strong>Domains</strong>
-      Research · AI_Context · Product_Value
-    </div>
-    <div class="cover-meta-item">
-      <strong>Version</strong>
-      v1 · May 2026
-    </div>
+    <div class="cover-meta-item"><strong>Status</strong>current_truth</div>
+    <div class="cover-meta-item"><strong>Confidence</strong>reasoned · provisional</div>
+    <div class="cover-meta-item"><strong>Domains</strong>Research · AI_Context · Product_Value</div>
+    <div class="cover-meta-item"><strong>Version</strong>v1 · May 2026</div>
   </div>
 </div>
 
@@ -827,6 +373,11 @@ body {
   <p>This brief explains the four layers of value, what each layer delivers to the human researcher, and — with precision and honesty — what the Claude marginal gain looks like when structured memory replaces raw document handling.</p>
 </div>
 
+<!-- HONESTY NOTE -->
+<div class="honesty-note reveal">
+  <strong>On the numbers below —</strong> these are reasoned estimates, not empirical measurements. They reflect architectural reasoning about context window efficiency and orientation cost reduction. The proof requires a controlled study: two groups, same documents, same task, measured output quality. That study has not been run. What has been demonstrated — repeatedly — is that the same AI model produces materially different quality when it has structured context versus raw text. The direction is certain. The magnitude is provisional.
+</div>
+
 <!-- LAYERS -->
 <div class="section reveal">
   <div class="section-header">
@@ -834,23 +385,14 @@ body {
     <h2 class="section-title">The four layers of value</h2>
   </div>
 
-  <!-- LAYER 1 -->
   <div class="layer l1 reveal">
-    <div class="layer-header">
-      <div class="layer-title-group">
-        <div class="layer-num">Layer 01 · Intelligent Notes</div>
-        <div class="layer-title">Structured note output</div>
-      </div>
-    </div>
-    <p class="layer-desc">Each document becomes an Intelligent Note — not just a summary, but a structured object carrying facts, claims, assumptions, domains, symbols, bridges, confidence, status, and a retrieval readiness score R(N). The researcher gains faster orientation without rereading. The system gains a navigable object instead of a text block.</p>
+    <div class="layer-num">Layer 01 · Intelligent Notes</div>
+    <div class="layer-title">Structured note output</div>
+    <p class="layer-desc">Each document becomes an Intelligent Note — a structured object carrying facts, domains, symbols, bridges, confidence, status, and a retrieval readiness score R(N). The researcher gains faster orientation without rereading. The system gains a navigable object instead of a text block.</p>
     <div class="gain-tags">
-      <span class="gain-tag">Facts</span>
-      <span class="gain-tag">Domains</span>
-      <span class="gain-tag">Symbols</span>
-      <span class="gain-tag">Bridges</span>
-      <span class="gain-tag">Confidence</span>
-      <span class="gain-tag">R(N) score</span>
-      <span class="gain-tag">Status</span>
+      <span class="gain-tag">Facts</span><span class="gain-tag">Domains</span><span class="gain-tag">Symbols</span>
+      <span class="gain-tag">Bridges</span><span class="gain-tag">Confidence</span>
+      <span class="gain-tag">R(N) score</span><span class="gain-tag">Status</span>
     </div>
     <div class="uplift-block">
       <div class="uplift-card human">
@@ -860,26 +402,19 @@ body {
       </div>
       <div class="uplift-card claude">
         <div class="uplift-label claude-label">Claude marginal gain</div>
-        <div class="uplift-number">+8–12%</div>
-        <div class="uplift-desc">less context spent inferring structure · more on reasoning</div>
+        <div class="uplift-number">+15–25%</div>
+        <div class="uplift-desc">context spent on structure drops · reasoning quality rises proportionally</div>
       </div>
     </div>
   </div>
 
-  <!-- LAYER 2 -->
   <div class="layer l2 reveal">
-    <div class="layer-header">
-      <div class="layer-title-group">
-        <div class="layer-num">Layer 02 · Oracle Retrieval</div>
-        <div class="layer-title">Meaning-first retrieval</div>
-      </div>
-    </div>
-    <p class="layer-desc">Normal search finds keywords. Oracle Retrieval finds meaning. It surfaces which documents support a claim, which contradict it, where an assumption first appeared, and which ideas are connected across domains under different names. Research is relationship management — and retrieval should reflect that.</p>
+    <div class="layer-num">Layer 02 · Oracle Retrieval</div>
+    <div class="layer-title">Meaning-first retrieval</div>
+    <p class="layer-desc">Normal search finds keywords. Oracle Retrieval finds meaning. It surfaces which documents support a claim, which contradict it, where an assumption first appeared, and which ideas connect across domains under different names. Research is relationship management — retrieval should reflect that.</p>
     <div class="gain-tags">
-      <span class="gain-tag">Semantic search</span>
-      <span class="gain-tag">Lineage tracing</span>
-      <span class="gain-tag">Contradiction map</span>
-      <span class="gain-tag">Bridge navigation</span>
+      <span class="gain-tag">Semantic search</span><span class="gain-tag">Lineage tracing</span>
+      <span class="gain-tag">Contradiction map</span><span class="gain-tag">Bridge navigation</span>
     </div>
     <div class="uplift-block">
       <div class="uplift-card human">
@@ -889,27 +424,19 @@ body {
       </div>
       <div class="uplift-card claude">
         <div class="uplift-label claude-label">Claude marginal gain</div>
-        <div class="uplift-number">+12–18%</div>
+        <div class="uplift-number">+20–30%</div>
         <div class="uplift-desc">pre-mapped relationships mean Claude reasons over tensions rather than discovering them</div>
       </div>
     </div>
   </div>
 
-  <!-- LAYER 3 -->
   <div class="layer l3 reveal">
-    <div class="layer-header">
-      <div class="layer-title-group">
-        <div class="layer-num">Layer 03 · Event Horizon Synthesis</div>
-        <div class="layer-title">New centre of meaning</div>
-      </div>
-    </div>
-    <p class="layer-desc">When a set of notes reaches density, Event Horizon Synthesis produces not a summary but a new working centre — the emergent claim, convergent threads, pinpoint propositions, unresolved contradictions, and a clear next action. The researcher sees what the documents are becoming, not just what they say.</p>
+    <div class="layer-num">Layer 03 · Event Horizon Synthesis</div>
+    <div class="layer-title">New centre of meaning</div>
+    <p class="layer-desc">When a note set reaches density, Event Horizon produces not a summary but a new working centre — the emergent claim, convergent threads, pinpoint propositions, unresolved contradictions, and a clear next action. The researcher sees what the documents are becoming, not just what they say.</p>
     <div class="gain-tags">
-      <span class="gain-tag">Event Horizon claim</span>
-      <span class="gain-tag">Pinpoint propositions</span>
-      <span class="gain-tag">Contradiction load</span>
-      <span class="gain-tag">Next action</span>
-      <span class="gain-tag">book_seed</span>
+      <span class="gain-tag">Event Horizon claim</span><span class="gain-tag">Pinpoint propositions</span>
+      <span class="gain-tag">Contradiction load</span><span class="gain-tag">Next action</span><span class="gain-tag">book_seed</span>
     </div>
     <div class="uplift-block">
       <div class="uplift-card human">
@@ -919,27 +446,19 @@ body {
       </div>
       <div class="uplift-card claude">
         <div class="uplift-label claude-label">Claude marginal gain</div>
-        <div class="uplift-number">+20–30%</div>
-        <div class="uplift-desc">cluster state and Ψ score allow synthesis-level reasoning rather than document-level summarising</div>
+        <div class="uplift-number">+25–35%</div>
+        <div class="uplift-desc">cluster state and Ψ score allow synthesis-level reasoning rather than document summarising</div>
       </div>
     </div>
   </div>
 
-  <!-- LAYER 4 -->
-  <div class="layer l4 reveal" style="border-color: rgba(124,58,237,0.15);">
-    <div class="layer-header">
-      <div class="layer-title-group">
-        <div class="layer-num">Layer 04 · Recursive Research Memory</div>
-        <div class="layer-title">The compounding engine</div>
-      </div>
-    </div>
-    <p class="layer-desc">The real advantage appears when the process repeats. A synthesis becomes the input to the next cluster. The system preserves not just documents but the evolution of the thinking itself — which claims were load-bearing, which were scaffolding, which were superseded. Over time the researcher reads the history of how their own understanding changed.</p>
+  <div class="layer l4 reveal" style="border-color:rgba(167,139,250,0.15)">
+    <div class="layer-num">Layer 04 · Recursive Research Memory</div>
+    <div class="layer-title">The compounding engine</div>
+    <p class="layer-desc">The real advantage appears when the process repeats. A synthesis becomes the input to the next cluster. The system preserves not just documents but the evolution of thinking itself — which claims were load-bearing, which were scaffolding, which were superseded. Over time the researcher reads the history of how their own understanding changed.</p>
     <div class="gain-tags">
-      <span class="gain-tag">Lineage tracking</span>
-      <span class="gain-tag">Supersession records</span>
-      <span class="gain-tag">Seed progression</span>
-      <span class="gain-tag">Second-order synthesis</span>
-      <span class="gain-tag">Trifectored sets</span>
+      <span class="gain-tag">Lineage tracking</span><span class="gain-tag">Supersession records</span>
+      <span class="gain-tag">Seed progression</span><span class="gain-tag">Second-order synthesis</span><span class="gain-tag">Trifectored sets</span>
     </div>
     <div class="uplift-block">
       <div class="uplift-card human">
@@ -954,10 +473,9 @@ body {
       </div>
     </div>
   </div>
-
 </div>
 
-<!-- CLAUDE GAIN SECTION -->
+<!-- CLAUDE GAIN -->
 <div class="section reveal">
   <div class="section-header">
     <span class="section-num">05</span>
@@ -969,10 +487,9 @@ body {
   </div>
 
   <div class="callout reveal">
-    <p><strong>The baseline problem.</strong> When Claude receives 30 raw documents, a significant portion of each response is spent on orientation — inferring structure, detecting themes, guessing importance, finding contradictions, building the mental model that should have been provided. That orientation cost is not intelligence. It is overhead. And it consumes context that could be spent on reasoning.</p>
+    <p><strong>The baseline problem.</strong> When Claude receives raw documents, a significant portion of each response is spent on orientation — inferring structure, detecting themes, guessing importance, finding contradictions, building the mental model that should have been provided. That orientation cost is not intelligence. It is overhead. And it consumes context that could be spent on reasoning.</p>
   </div>
 
-  <!-- SUMMARY TABLE -->
   <table class="summary-table reveal">
     <thead>
       <tr>
@@ -992,28 +509,28 @@ body {
         <td class="pct combined">—</td>
       </tr>
       <tr>
-        <td class="td-layer">Layer 1 · Intelligent Notes</td>
+        <td class="td-layer">L1 · Intelligent Notes</td>
         <td>Structured objects · domains · symbols · R(N) scores</td>
         <td class="pct human">20–35%</td>
-        <td class="pct claude">+8–12%</td>
-        <td class="pct combined">~28–47%</td>
+        <td class="pct claude">+15–25%</td>
+        <td class="pct combined">~35–60%</td>
       </tr>
       <tr>
-        <td class="td-layer">Layer 2 · Oracle Retrieval</td>
+        <td class="td-layer">L2 · Oracle Retrieval</td>
         <td>Pre-mapped relationships · contradiction markers · lineage</td>
         <td class="pct human">30–50%</td>
-        <td class="pct claude">+12–18%</td>
-        <td class="pct combined">~42–68%</td>
+        <td class="pct claude">+20–30%</td>
+        <td class="pct combined">~50–80%</td>
       </tr>
       <tr>
-        <td class="td-layer">Layer 3 · Event Horizon</td>
+        <td class="td-layer">L3 · Event Horizon</td>
         <td>Cluster state · Ψ score · attractor · synthesis readiness</td>
         <td class="pct human">40–70%</td>
-        <td class="pct claude">+20–30%</td>
-        <td class="pct combined">~60–100%</td>
+        <td class="pct claude">+25–35%</td>
+        <td class="pct combined">~65–105%</td>
       </tr>
       <tr>
-        <td class="td-layer">Layer 4 · Trifectored sets</td>
+        <td class="td-layer">L4 · Trifectored sets</td>
         <td>Second-order synthesis · recursion metadata · governed memory</td>
         <td class="pct human">50–80%</td>
         <td class="pct claude">+35–50%</td>
@@ -1022,66 +539,38 @@ body {
     </tbody>
   </table>
 
-  <p style="font-size: 0.82rem; color: var(--faint); font-family: var(--font-mono); margin-top: -0.5rem; margin-bottom: 1.5rem; letter-spacing: 0.03em;">Combined figures reflect compounding across both human and Claude gains on output quality vs. raw-document baseline. Not additive — multiplicative at higher layers.</p>
+  <p style="font-size:.78rem;color:var(--faint);font-family:var(--fm);margin-top:-.5rem;margin-bottom:1.5rem;letter-spacing:.03em;">Combined figures reflect compounding across both human and Claude gains on output quality vs. raw-document baseline. Multiplicative at higher layers, not additive. Reasoned estimates — not empirically validated data.</p>
 
-  <!-- BAR CHART -->
   <div class="compound-visual reveal">
-    <div style="font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--faint); margin-bottom: 1.25rem;">Marginal gain by layer — relative to raw document baseline</div>
-
+    <div style="font-family:var(--fm);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);margin-bottom:1.25rem;">Marginal gain by layer — relative to raw document baseline</div>
     <div class="compound-row">
       <span class="compound-layer-name">Raw docs only</span>
-      <div class="compound-bar-wrap">
-        <div class="compound-bar-human" style="width:0%"></div>
-        <div class="compound-bar-claude" style="left:0%; width:0%"></div>
-      </div>
+      <div class="compound-bar-wrap"><div class="compound-bar-human" style="width:0%"></div><div class="compound-bar-claude" style="left:0%;width:0%"></div></div>
       <span class="compound-pct" style="color:var(--faint)">baseline</span>
     </div>
-
     <div class="compound-row">
       <span class="compound-layer-name">L1 · Intelligent Notes</span>
-      <div class="compound-bar-wrap">
-        <div class="compound-bar-human" style="width:27%"></div>
-        <div class="compound-bar-claude" style="left:27%; width:10%"></div>
-      </div>
-      <span class="compound-pct"><span style="color:var(--amber)">27%</span> + <span style="color:var(--blue)">10%</span></span>
+      <div class="compound-bar-wrap"><div class="compound-bar-human" style="width:27%"></div><div class="compound-bar-claude" style="left:27%;width:20%"></div></div>
+      <span class="compound-pct"><span style="color:var(--amber)">27%</span> + <span style="color:var(--accent)">20%</span></span>
     </div>
-
     <div class="compound-row">
       <span class="compound-layer-name">L2 · Oracle Retrieval</span>
-      <div class="compound-bar-wrap">
-        <div class="compound-bar-human" style="width:40%"></div>
-        <div class="compound-bar-claude" style="left:40%; width:15%"></div>
-      </div>
-      <span class="compound-pct"><span style="color:var(--amber)">40%</span> + <span style="color:var(--blue)">15%</span></span>
+      <div class="compound-bar-wrap"><div class="compound-bar-human" style="width:40%"></div><div class="compound-bar-claude" style="left:40%;width:25%"></div></div>
+      <span class="compound-pct"><span style="color:var(--amber)">40%</span> + <span style="color:var(--accent)">25%</span></span>
     </div>
-
     <div class="compound-row">
       <span class="compound-layer-name">L3 · Event Horizon</span>
-      <div class="compound-bar-wrap">
-        <div class="compound-bar-human" style="width:55%"></div>
-        <div class="compound-bar-claude" style="left:55%; width:25%"></div>
-      </div>
-      <span class="compound-pct"><span style="color:var(--amber)">55%</span> + <span style="color:var(--blue)">25%</span></span>
+      <div class="compound-bar-wrap"><div class="compound-bar-human" style="width:55%"></div><div class="compound-bar-claude" style="left:55%;width:30%"></div></div>
+      <span class="compound-pct"><span style="color:var(--amber)">55%</span> + <span style="color:var(--accent)">30%</span></span>
     </div>
-
     <div class="compound-row">
       <span class="compound-layer-name">L4 · Trifectored</span>
-      <div class="compound-bar-wrap">
-        <div class="compound-bar-human" style="width:65%"></div>
-        <div class="compound-bar-claude" style="left:65%; width:35%"></div>
-      </div>
-      <span class="compound-pct"><span style="color:var(--amber)">65%</span> + <span style="color:var(--blue)">35%</span></span>
+      <div class="compound-bar-wrap"><div class="compound-bar-human" style="width:65%"></div><div class="compound-bar-claude" style="left:65%;width:35%"></div></div>
+      <span class="compound-pct"><span style="color:var(--amber)">65%</span> + <span style="color:var(--accent)">35%</span></span>
     </div>
-
     <div class="compound-legend">
-      <div class="compound-legend-item">
-        <div class="legend-dot human"></div>
-        Human researcher workflow uplift
-      </div>
-      <div class="compound-legend-item">
-        <div class="legend-dot claude"></div>
-        Claude synthesis quality gain above that
-      </div>
+      <div class="compound-legend-item"><div class="legend-dot human"></div>Human researcher workflow uplift</div>
+      <div class="compound-legend-item"><div class="legend-dot claude"></div>Claude synthesis quality gain above that</div>
     </div>
   </div>
 
@@ -1090,7 +579,7 @@ body {
   </div>
 
   <div class="callout amber reveal">
-    <p><strong>The honest ceiling.</strong> The remaining quality gap — the part structured memory cannot close — requires lived experience of the problem, embodied judgment, and the kind of knowing that comes from having been wrong about something and felt it. No architecture gives Claude that. The ceiling for Claude's marginal gain, even at full trifectored input, is approximately 50% above baseline. Beyond that, expert human judgment remains the decisive variable.</p>
+    <p><strong>The honest ceiling.</strong> The remaining quality gap — the part structured memory cannot close — requires lived experience of the problem, embodied judgment, and the kind of knowing that comes from having been wrong about something and felt it. No architecture gives Claude that. Expert human judgment remains the decisive variable beyond the ceiling.</p>
   </div>
 </div>
 
@@ -1100,13 +589,12 @@ body {
     <span class="section-num">06</span>
     <h2 class="section-title">Pinpoint propositions</h2>
   </div>
-
   <ul class="props">
-    <li><span class="prop-pin">📌</span> A structured Blue Whale cluster does not make Claude smarter. It makes Claude accurate in a domain where it is usually only approximately right — and that difference, compounded across thirty documents, is where the 35–50% lives.</li>
-    <li><span class="prop-pin">📌</span> The human gain and the Claude gain are not the same thing. The human gains navigability and reduced overwhelm. Claude gains orientation — which translates directly to reasoning quality.</li>
-    <li><span class="prop-pin">📌</span> Every additional layer of structure reduces the orientation cost and raises the ceiling on what the synthesis can be. The gains are multiplicative, not additive.</li>
-    <li><span class="prop-pin">📌</span> The recursive layer is where the moat forms. Each synthesis cycle makes the next one cheaper, faster, and more accurate. That compounding cannot be replicated by prompt engineering alone.</li>
-    <li><span class="prop-pin">📌</span> The honest limit: Blue Whale Memory improves the research environment. It does not replace expert judgment, statistical validation, peer review, experimental proof, or the lived knowledge that comes from being inside a problem for years.</li>
+    <li><span class="prop-pin">📌</span>A structured Blue Whale cluster does not make Claude smarter. It makes Claude accurate in a domain where it is usually only approximately right — and that difference, compounded across a document set, is where the gain lives.</li>
+    <li><span class="prop-pin">📌</span>The human gain and the Claude gain are not the same thing. The human gains navigability and reduced overwhelm. Claude gains orientation — which translates directly to reasoning quality.</li>
+    <li><span class="prop-pin">📌</span>Every additional layer of structure reduces the orientation cost and raises the ceiling on what the synthesis can be. The gains are multiplicative, not additive.</li>
+    <li><span class="prop-pin">📌</span>The recursive layer is where the moat forms. Each synthesis cycle makes the next one cheaper, faster, and more accurate. That compounding cannot be replicated by prompt engineering alone.</li>
+    <li><span class="prop-pin">📌</span>The honest limit: Blue Whale Memory improves the research environment. It does not replace expert judgment, statistical validation, peer review, experimental proof, or the lived knowledge that comes from being inside a problem for years.</li>
   </ul>
 </div>
 
@@ -1116,11 +604,9 @@ body {
     <span class="section-num">07</span>
     <h2 class="section-title">What this does not do</h2>
   </div>
-
   <div class="prose">
     <p>Blue Whale Memory should not be framed as a system that guarantees breakthroughs. Its honest role is to improve the research environment — to help the user preserve the path, reduce fog, and see the next pressure point more clearly.</p>
   </div>
-
   <div class="limits-grid">
     <div class="limit-cell"><strong>Does not replace</strong>Expert domain judgment</div>
     <div class="limit-cell"><strong>Does not replace</strong>Statistical validation</div>
@@ -1135,15 +621,23 @@ body {
 
 <!-- CLOSING -->
 <div class="closing reveal">
-  <h2 class="closing-title">
-    Bring the mess.<br>Leave with a map.
-  </h2>
+  <h2 class="closing-title">Bring the mess.<br>Leave with a map.</h2>
   <p class="closing-sub">
-    Blue Whale Memory turns complex research material into structured, retrievable, synthesis-ready memory. The free version lets you experience the arena in your browser — no account, no database, up to 30 documents. The full Trifecta will let you keep the memory.
+    Blue Whale Memory turns complex research material into structured, retrievable, synthesis-ready memory. The free version works now in your browser — no account required. The full Trifecta keeps the memory.
   </p>
   <div class="closing-ctas">
-    <a href="/app" class="btn-primary">🐋 Try Intelligent Notes Free</a>
-    <a href="#" class="btn-secondary">Register interest in the Trifecta →</a>
+    <a href="https://app.bluewhalememory.com/" class="btn-primary" target="_blank">🐋 Try Intelligent Notes Free</a>
+    <a href="https://bluewhalememory.com/#register" class="btn-secondary">Register interest in the Trifecta →</a>
+  </div>
+
+  <div class="closing-quote">
+    <blockquote>
+      The model does not need to be smarter.<br>
+      The field around it needs to be <em>clearer</em>.<br>
+      The first brief shapes the entire project.<br>
+      Structure is not overhead — it is the start line.
+    </blockquote>
+    <cite>Blue Whale Memory · Research Value Brief · May 2026</cite>
   </div>
 </div>
 
@@ -1154,44 +648,27 @@ body {
 </div>
 
 <script>
-  // ── THEME TOGGLE ──
-  const html = document.documentElement;
-  const toggle = document.getElementById('themeToggle');
-  const optLight = document.getElementById('opt-light');
+  const html    = document.documentElement;
+  const toggle  = document.getElementById('themeToggle');
   const optDark = document.getElementById('opt-dark');
+  const optLight= document.getElementById('opt-light');
 
-  function applyTheme(theme) {
-    if (theme === 'dark') {
-      html.classList.add('dark');
-      optDark.classList.add('active');
-      optLight.classList.remove('active');
-    } else {
-      html.classList.remove('dark');
-      optLight.classList.add('active');
-      optDark.classList.remove('active');
-    }
-    localStorage.setItem('bwm-brief-theme', theme);
+  function applyTheme(t) {
+    const dark = t === 'dark';
+    html.classList.toggle('light', !dark);
+    optDark.classList.toggle('active', dark);
+    optLight.classList.toggle('active', !dark);
+    localStorage.setItem('bwm-brief-theme', t);
   }
 
   const saved = localStorage.getItem('bwm-brief-theme');
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  applyTheme(saved || (prefersDark ? 'dark' : 'light'));
+  applyTheme(saved || (window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light'));
+  toggle.addEventListener('click', () => applyTheme(html.classList.contains('light') ? 'dark' : 'light'));
 
-  toggle.addEventListener('click', () => {
-    applyTheme(html.classList.contains('dark') ? 'light' : 'dark');
-  });
-
-  // ── SCROLL REVEAL ──
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        observer.unobserve(e.target);
-      }
-    });
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
   }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
-
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 </script>
 
 </body>
