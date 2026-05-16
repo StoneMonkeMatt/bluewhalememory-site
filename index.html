@@ -1,16 +1,17 @@
+Homepage html intelligent notes demo url 
+https://claude.ai/public/artifacts/ac03da75-c25e-4c80-95ef-3ee821bc7df9
+https://claude.ai/public/artifacts/71f1a0b4-fbff-4741-b08f-71c7a736668c
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blue Whale Memory — A Memory Protocol</title>
-<meta name="description" content="Blue Whale Memory is a memory protocol. Model-independent. Persistent. Interoperable. The model is just the current best tool to read and write to it.">
-<meta property="og:title" content="Blue Whale Memory — A Memory Protocol">
-<meta property="og:description" content="Model-independent. Persistent. Interoperable. The model is just the current best tool to read and write to it.">
-<meta property="og:image" content="https://bluewhalememory.com/images/blue-whale-protocol.png">
-<meta property="og:url" content="https://bluewhalememory.com">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://bluewhalememory.com/images/blue-whale-protocol.png">
+<title>Blue Whale Memory — Intelligent Notes</title>
+<meta name="description" content="Turn complex documents into structured, intelligent memory. Free to try. No account required.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Instrument+Sans:wght@400;500;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
@@ -211,7 +212,8 @@ nav{
 /* ── HERO IMAGE ── */
 .hero-right{
   position:relative;display:flex;align-items:center;justify-content:center;
-  min-height:560px;animation:fadeUp .9s .2s ease both
+  min-height:560px;animation:fadeUp .9s .2s ease both;
+  padding:0 clamp(1rem,4vw,3rem)
 }
 .hero-right::before{
   content:'';position:absolute;width:480px;height:480px;border-radius:50%;
@@ -230,9 +232,9 @@ nav{
   backdrop-filter:blur(8px);border-radius:3px;padding:8px 12px;
   font-family:var(--fm);font-size:11px;color:var(--muted);pointer-events:none
 }
-.img-badge.b1{top:12%;left:-8%}
-.img-badge.b2{bottom:16%;right:-6%}
-.img-badge.b3{top:58%;left:-10%}
+.img-badge.b1{top:10%;left:5%}
+.img-badge.b2{bottom:12%;right:5%}
+.img-badge.b3{top:55%;left:5%}
 .badge-val{display:block;font-size:14px;color:var(--text);margin-bottom:2px}
 .badge-teal{color:var(--teal)}
 
@@ -443,12 +445,12 @@ footer{
     <a class="nav-link" href="#what">What it does</a>
     <a class="nav-link" href="#trifecta">The Trifecta</a>
     <a class="nav-link" href="#register">Register interest</a>
-    <a class="btn-pill btn-trifecta" href="/trifecta.html" target="_blank">🌀 Trifecta</a>
+    <a class="btn-pill btn-trifecta" href="https://claude.ai/public/artifacts/71f1a0b4-fbff-4741-b08f-71c7a736668c" target="_blank">🌀 Trifecta</a>
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark theme">
       <span class="theme-toggle-option" id="opt-dark">🌙</span>
       <span class="theme-toggle-option" id="opt-light">☀️</span>
     </button>
-    <a class="btn-pill btn-nav" href="/app" target="_blank">🧭 Try free</a>
+    <a class="btn-pill btn-nav" href="https://app.bluewhalememory.com/" target="_blank">🧭 Try free</a>
   </div>
 </nav>
 
@@ -459,24 +461,28 @@ footer{
     <div class="hero-left">
       <div class="hero-eyebrow">
         <span class="eyebrow-dot"></span>
-        <span class="label">Model-independent · Persistent · Interoperable</span>
+        <span class="label">Free · No account · Up to 30 documents</span>
       </div>
       <h1 class="display hero-headline">
-        A memory<br>protocol for<br><em>coherent intelligence.</em>
+        Turn complex<br>documents into<br><em>intelligent memory.</em>
       </h1>
       <p class="hero-sub">
-        Blue Whale Memory is a memory protocol, not an AI app. Your documents are structured into symbols, domains, bridges, and meaning pathways — then stored in infrastructure you control.
+        Bring your research, notes, project files, or document chaos. Blue Whale Memory structures them into symbols, domains, bridges, and synthesis-ready insight — directly in your browser.
       </p>
       <blockquote class="hero-quote">
         <p>Complexity is not the enemy.<br>It is the arena where timing, forgiveness, and choice become real.</p>
       </blockquote>
       <div class="hero-ctas">
-        <a href="/app" class="btn-primary" target="_blank">🐋 Try Intelligent Notes Free</a>
+        <a href="https://app.bluewhalememory.com/" class="btn-primary" target="_blank">🐋 Try Intelligent Notes Free</a>
         <a href="#register" class="btn-secondary">Register interest</a>
       </div>
     </div>
     <div class="hero-right">
-      <img src="/images/blue-whale-protocol.png" alt="Blue Whale Memory — Model-independent. Persistent. Interoperable. A memory protocol." style="width:100%;border-radius:4px;border:.5px solid var(--border);">
+      <!-- <img src="/images/blue-whale-memory-hero.png" alt="Blue Whale Memory — symbolic whale sphere showing intelligent memory, domains, bridges, and coherent semantics"> -->
+      <div class="hero-img-placeholder">
+        <span>🐋</span>
+        <p>bluewhalememory.com/images/<br>blue-whale-leviathan.png</p>
+      </div>
       <div class="img-badge b1"><span class="badge-val badge-teal">current_truth</span><span>Event Horizon reached</span></div>
       <div class="img-badge b2"><span class="badge-val">R(N) 0.91</span><span>Retrieval readiness</span></div>
       <div class="img-badge b3"><span class="badge-val">12 bridges formed</span><span>Semantic connections</span></div>
@@ -497,7 +503,7 @@ footer{
   <div class="flow reveal">
     <div class="flow-step"><div class="flow-step-num">01</div><div class="flow-step-name">Upload or paste</div><div class="flow-step-desc">Paste or upload your working documents. Research, notes, briefs, transcripts.</div></div>
     <div class="flow-arrow">→</div>
-    <div class="flow-step"><div class="flow-step-num">02</div><div class="flow-step-name">Intelligent Notes</div><div class="flow-step-desc">Each document becomes a structured note — facts, symbols, domains, bridges, retrieval score — stored in your pipeline.</div></div>
+    <div class="flow-step"><div class="flow-step-num">02</div><div class="flow-step-name">Intelligent Notes</div><div class="flow-step-desc">Each document becomes a structured note with facts, symbols, domains, and bridges.</div></div>
     <div class="flow-arrow">→</div>
     <div class="flow-step"><div class="flow-step-num">03</div><div class="flow-step-name">Cluster overview</div><div class="flow-step-desc">Themes, patterns, contradictions, and synthesis readiness across your whole set.</div></div>
     <div class="flow-arrow">→</div>
@@ -542,7 +548,7 @@ footer{
       <div class="tri-name">Intelligent Notes</div>
       <p class="tri-desc">Turn raw documents into structured, inspectable memory. Works in the browser. No account required.</p>
       <div class="tri-items"><span class="tri-item">Facts, domains, symbols</span><span class="tri-item">Bridges &amp; lineage</span><span class="tri-item">Status &amp; confidence</span><span class="tri-item">R(N) retrieval score</span></div>
-      <span class="tri-badge free">Free · try now</span>
+      <span class="tri-badge free">Free · browser session</span>
     </div>
     <div class="tri-card c2">
       <div class="tri-num">02 — Coming</div>
@@ -629,7 +635,7 @@ footer{
         <div class="success-whale">🐋</div>
         <div class="display success-title">You're in the ocean.</div>
         <p class="success-desc">The free version works right now in your browser.<br>When the full Trifecta launches, you'll be among the first invited.</p>
-        <a href="/app" class="btn-primary" style="margin-top:1.5rem;display:inline-flex">Try Intelligent Notes Free</a>
+        <a href="https://app.bluewhalememory.com/" class="btn-primary" style="margin-top:1.5rem;display:inline-flex">Try Intelligent Notes Free</a>
       </div>
     </div>
   </div>
@@ -646,7 +652,7 @@ footer{
     <span class="footer-name"><strong>Blue Whale Memory</strong>bluewhalememory.com</span>
   </div>
   <div class="footer-links">
-    <a class="footer-link" href="/app">Try free app</a>
+    <a class="footer-link" href="https://app.bluewhalememory.com/">Try free app</a>
     <a class="footer-link" href="#what">What it does</a>
     <a class="footer-link" href="#trifecta">The Trifecta</a>
     <a class="footer-link" href="#register">Register interest</a>
@@ -702,13 +708,37 @@ footer{
 
 
   // ── FORM ──
-  window.submitForm=function(e){
+  window.submitForm=async function(e){
     e.preventDefault();
     const email=document.getElementById('email').value.trim();
     if(!email||!email.includes('@')){document.getElementById('email').focus();return}
-    // TODO: POST to /api/register-interest
-    document.getElementById('form-area').style.display='none';
-    document.getElementById('success-state').style.display='block';
+    const btn=e.target;
+    btn.disabled=true;
+    btn.textContent='Sending…';
+    try{
+      const res=await fetch('/api/register-interest',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          email,
+          usecase:document.getElementById('usecase').value,
+          note:document.getElementById('note').value,
+        }),
+      });
+      const data=await res.json();
+      if(data.ok){
+        document.getElementById('form-area').style.display='none';
+        document.getElementById('success-state').style.display='block';
+      } else {
+        btn.disabled=false;
+        btn.textContent='Register interest →';
+        alert('Something went wrong. Please try again or email hello@bluewhalememory.com');
+      }
+    }catch{
+      btn.disabled=false;
+      btn.textContent='Register interest →';
+      alert('Could not connect. Please email hello@bluewhalememory.com directly.');
+    }
   };
 })();
 </script>
