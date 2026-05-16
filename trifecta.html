@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Blue Whale Memory — Research Value Brief</title>
+<link rel="stylesheet" href="/styles.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐋</text></svg>">
 <meta name="description" content="How Blue Whale Memory improves complex research projects — and what the Claude marginal gain looks like at each layer.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -309,6 +310,13 @@ nav{
 .doc-footer-text{font-family:var(--fm);font-size:10px;color:var(--faint);letter-spacing:.06em;text-transform:uppercase}
 
 /* ── RESPONSIVE ── */
+/* tablet */
+@media(max-width:800px){
+  .uplift-block{grid-template-columns:1fr}
+  .limits-grid{grid-template-columns:1fr 1fr}
+  body{padding-top:4.5rem}
+}
+/* mobile */
 @media(max-width:600px){
   .uplift-block{grid-template-columns:1fr}
   .limits-grid{grid-template-columns:1fr}
@@ -316,6 +324,9 @@ nav{
   .summary-table{font-size:.78rem}
   .cover-meta-row{flex-direction:column;gap:1rem}
   .nav-doc{display:none}
+  .compound-visual{padding:1.25rem}
+  .closing-ctas{flex-direction:column;align-items:center}
+  .cover-title{font-size:clamp(2rem,9vw,3rem)}
 }
 
 /* ── SCROLL REVEAL ── */
@@ -591,11 +602,11 @@ nav{
     <h2 class="section-title">Pinpoint propositions</h2>
   </div>
   <ul class="props">
-    <li><span class="prop-pin">📌</span>A structured Blue Whale cluster does not make Claude smarter. It makes Claude accurate in a domain where it is usually only approximately right — and that difference, compounded across a document set, is where the gain lives.</li>
-    <li><span class="prop-pin">📌</span>The human gain and the Claude gain are not the same thing. The human gains navigability and reduced overwhelm. Claude gains orientation — which translates directly to reasoning quality.</li>
-    <li><span class="prop-pin">📌</span>Every additional layer of structure reduces the orientation cost and raises the ceiling on what the synthesis can be. The gains are multiplicative, not additive.</li>
-    <li><span class="prop-pin">📌</span>The recursive layer is where the moat forms. Each synthesis cycle makes the next one cheaper, faster, and more accurate. That compounding cannot be replicated by prompt engineering alone.</li>
-    <li><span class="prop-pin">📌</span>The honest limit: Blue Whale Memory improves the research environment. It does not replace expert judgment, statistical validation, peer review, experimental proof, or the lived knowledge that comes from being inside a problem for years.</li>
+    <li><span class="prop-pin">🧭</span>A structured Blue Whale cluster does not make Claude smarter. It makes Claude accurate in a domain where it is usually only approximately right — and that difference, compounded across a document set, is where the gain lives.</li>
+    <li><span class="prop-pin">⚓</span>The human gain and the Claude gain are not the same thing. The human gains navigability and reduced overwhelm. Claude gains orientation — which translates directly to reasoning quality.</li>
+    <li><span class="prop-pin">🌉</span>Every additional layer of structure reduces the orientation cost and raises the ceiling on what the synthesis can be. The gains are multiplicative, not additive.</li>
+    <li><span class="prop-pin">🧲</span>The recursive layer is where the moat forms. Each synthesis cycle makes the next one cheaper, faster, and more accurate. That compounding cannot be replicated by prompt engineering alone.</li>
+    <li><span class="prop-pin">🕯️</span>The honest limit: Blue Whale Memory improves the research environment. It does not replace expert judgment, statistical validation, peer review, experimental proof, or the lived knowledge that comes from being inside a problem for years.</li>
   </ul>
 </div>
 
