@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Blue Whale Memory — Intelligent Notes</title>
+<link rel="stylesheet" href="/styles.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐋</text></svg>">
 <meta name="description" content="Turn complex documents into structured, intelligent memory. Free to try. No account required.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -164,7 +165,7 @@ nav{
 /* ── HERO ── */
 .hero{
   min-height:100vh;display:grid;grid-template-columns:1fr 1fr;
-  align-items:center;padding:5rem var(--pad) 0;
+  align-items:start;padding:6rem var(--pad) 0;
   max-width:var(--max);margin:0 auto
 }
 .hero-left{padding-right:clamp(2rem,5vw,5rem);animation:fadeUp .9s ease both}
@@ -204,8 +205,8 @@ nav{
 
 /* ── HERO IMAGE ── */
 .hero-right{
-  position:relative;display:flex;align-items:center;justify-content:center;
-  min-height:560px;animation:fadeUp .9s .2s ease both;
+  position:relative;display:flex;align-items:flex-start;justify-content:center;
+  align-self:start;padding-top:0.5rem;animation:fadeUp .9s .2s ease both;
 }
 .hero-right::before{
   content:'';position:absolute;width:480px;height:480px;border-radius:50%;
@@ -387,24 +388,37 @@ footer{
 
 
 /* ── RESPONSIVE ── */
-@media(max-width:860px){
-  .hero{grid-template-columns:1fr;min-height:auto;padding-top:7rem;gap:3rem}
+/* tablet */
+@media(max-width:1000px){
+  .hero{gap:2rem}
+  .hero-left{padding-right:clamp(1rem,3vw,2rem)}
+}
+/* tablet portrait */
+@media(max-width:800px){
+  .hero{grid-template-columns:1fr;min-height:auto;padding-top:7rem;gap:2.5rem}
   .hero-left{padding-right:0}
-  .hero-right{min-height:320px}
+  .hero-right{width:100%;max-width:520px;margin:0 auto;align-self:auto;padding-top:0}
   .what-header{grid-template-columns:1fr;gap:1.5rem}
   .flow{flex-direction:column}
   .flow-step{border-right:none;border-bottom:.5px solid var(--border)}
   .flow-step:last-child{border-bottom:none}
   .flow-arrow{display:none}
-  .features{grid-template-columns:1fr}
+  .features{grid-template-columns:1fr 1fr}
   .trifecta-cards{grid-template-columns:1fr}
   .complexity-inner{grid-template-columns:1fr;gap:3rem}
-  footer{flex-direction:column;align-items:flex-start}
+  .img-badge{display:none}
+  .hero-ctas{flex-wrap:wrap}
 }
-@media(max-width:600px){
-  .nav-actions .nav-link{display:none}
+/* mobile */
+@media(max-width:540px){
+  .features{grid-template-columns:1fr}
   .complexity-grid{grid-template-columns:1fr}
   .cplx-who{grid-template-columns:1fr}
+  .hero-headline{font-size:clamp(2.2rem,10vw,3.2rem)}
+  .register-form-wrap{padding:1.5rem}
+  .closing-ctas{flex-direction:column;align-items:center}
+  footer{flex-direction:column;align-items:flex-start}
+  .footer-links{flex-wrap:wrap;gap:1rem}
 }
 
 
